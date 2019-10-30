@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,17 +22,59 @@ class MyStatefulWidget extends StatefulWidget {
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+
+        Swiper(
+          itemBuilder: (BuildContext context,int index){
+            return new Image.network("https://i.pinimg.com/originals/dc/96/05/dc9605c40c01ccd0131e8f8b499f32d6.jpg",fit: BoxFit.fill,);
+          },
+          itemCount: 3,
+          pagination: new SwiperPagination(),
+          control: new SwiperControl(),
+        ),
+
+      ]
+
+    );
+  }
+}
+
 class HomePage extends StatelessWidget { // This will be widgets for the home page.
   final Color color;
 
   HomePage(this.color);
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: color,
+  Widget build(BuildContext context){
+    return Stack(
+
+      children: <Widget>[
+
+        Container(
+          color: color,
+
+        ),
+        MyHomePage()
+
+      ],
+
     );
   }
+
 }
 
 class LookupPage extends StatelessWidget{
@@ -139,3 +182,4 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 }
+
