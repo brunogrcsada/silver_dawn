@@ -21,10 +21,10 @@ class MyStatefulWidget extends StatefulWidget {
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
 }
 
-class PlaceholderWidget extends StatelessWidget {
+class HomePage extends StatelessWidget { // This will be widgets for the home page.
   final Color color;
 
-  PlaceholderWidget(this.color);
+  HomePage(this.color);
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +34,53 @@ class PlaceholderWidget extends StatelessWidget {
   }
 }
 
+class LookupPage extends StatelessWidget{
+  final Color color;
+
+  LookupPage(this.color);
+
+  @override
+  Widget build(BuildContext context){
+    return Stack(
+
+      children: <Widget>[
+
+        Container(
+          color: color,
+
+        )
+
+      ],
+
+    );
+  }
+}
+
+class TripPage extends StatelessWidget{
+  final Color color;
+
+  TripPage(this.color);
+
+  @override
+  Widget build(BuildContext context){
+    return Stack(
+      children: <Widget>[
+        Container(
+           color: color,
+        ),
+      ],
+    );
+  }
+
+}
+
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
 
   final List<Widget> _widgetOptions = [
-    PlaceholderWidget(Colors.yellow),
-    PlaceholderWidget(Colors.deepOrange),
-    PlaceholderWidget(Colors.green)
+    HomePage(Colors.yellow),
+    LookupPage(Colors.deepOrange),
+    TripPage(Colors.green)
   ];
 
   void _onItemTapped(int index) {
