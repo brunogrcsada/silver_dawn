@@ -35,46 +35,47 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
 
-        Swiper(
-          itemBuilder: (BuildContext context,int index){
-            return new Image.network("https://i.pinimg.com/originals/dc/96/05/dc9605c40c01ccd0131e8f8b499f32d6.jpg",fit: BoxFit.fill,);
-          },
-          itemCount: 3,
-          pagination: new SwiperPagination(),
-          control: new SwiperControl(),
-        ),
+        children: <Widget>[
+          Container(
 
-      ]
+            margin: const EdgeInsets.only(bottom: 100.0),
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: new Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
 
+                );
+              },
+              itemCount: 10,
+              viewportFraction: 0.8,
+              scale: 0.9,
+            ),
+          )
+        ]
     );
   }
 }
 
 class HomePage extends StatelessWidget { // This will be widgets for the home page.
   final Color color;
-
   HomePage(this.color);
 
   @override
   Widget build(BuildContext context){
     return Stack(
-
       children: <Widget>[
-
         Container(
-          color: color,
-
+          color: Color.fromRGBO(33, 50, 85, 1),
         ),
         MyHomePage()
-
       ],
-
     );
   }
-
 }
 
 class LookupPage extends StatelessWidget{
