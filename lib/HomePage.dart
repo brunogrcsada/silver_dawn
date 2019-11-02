@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:animator/animator.dart';
+import 'package:silver_dawn/AddCustomer.dart';
 
 class HomePage extends StatelessWidget { // This will be widgets for the home page.
   final Color color;
@@ -51,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: FractionalTranslation(
                 translation: anim["translation"].value,
                 child: new Image.asset(
-                  'assets/logo.png',
+                  'assets/logo.png', //TODO: make logo transparent to remove box color difference.
                   height: 220.0,
                   fit: BoxFit.cover,
                 ),
@@ -161,7 +162,10 @@ class MyWidget extends StatelessWidget {
 
         child: GestureDetector(
           onTap: (){
-            print("tapped");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SecondRoute()),
+            );
           },
 
           child: Stack(
