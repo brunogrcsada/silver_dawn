@@ -71,7 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
 class MyStructure {
   final int id;
   final String text;
-  MyStructure({this.id, this.text});
+  final String directory;
+  final IconData icon;
+
+  MyStructure({this.id, this.text, this.icon, this.directory});
 }
 
 class InnerSwiper extends StatefulWidget {
@@ -95,10 +98,10 @@ class _InnerSwiperState extends State<InnerSwiper> {
       ..length = 10
       ..fillRange(0, 10, new SwiperController());
 
-    for(int i=0;i < 3; i++) {
-      widgetList.add(MyStructure(id:i,text: ' this is index ${i}'));
-    } /* This creates initial widgets in the list. You don't need to use the
-    for loop. */
+
+    widgetList.add(MyStructure(id:0,text: 'New Customer', icon: Icons.add_circle, directory: 'assets/customer.png'));
+    widgetList.add(MyStructure(id:1,text: 'Create Booking', icon: Icons.directions_bus, directory: 'assets/booking.png'));
+    widgetList.add(MyStructure(id:2,text: 'New Trip', icon: Icons.card_travel, directory: 'assets/trip.png'));
 
     //TODO: Can I engineer a function widget to create a custom card for each.
 
@@ -138,6 +141,7 @@ class _InnerSwiperState extends State<InnerSwiper> {
 
 class MyWidget extends StatelessWidget {
   final MyStructure widgetStructure;
+
   MyWidget(this.widgetStructure);
 
   @override
@@ -164,7 +168,7 @@ class MyWidget extends StatelessWidget {
             fit: StackFit.expand,
             children: <Widget>[
               Image.asset(
-                'assets/customer.png',
+                this.widgetStructure.directory,
                 fit: BoxFit.cover,
               ), Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -174,7 +178,7 @@ class MyWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      IconShadowWidget(Icon(Icons.add_circle,
+                      IconShadowWidget(Icon(widgetStructure.icon,
                           color: Colors.white, size: 126),
                         showShadow: true, shadowColor: Colors.black,),
                     ],
