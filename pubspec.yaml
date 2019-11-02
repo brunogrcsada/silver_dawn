@@ -18,6 +18,8 @@ environment:
 
 dependencies:
   flutter_swiper: ^1.1.6
+  animator: ^1.0.0+1
+  icon_shadow: ^1.0.1
   flutter:
     sdk: flutter
 
@@ -44,7 +46,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/blur1.png
+    - assets/customer.png
+    - assets/booking.png
+    - assets/trip.png
+    - assets/logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
