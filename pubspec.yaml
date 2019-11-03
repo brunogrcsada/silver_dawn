@@ -18,8 +18,10 @@ environment:
 
 dependencies:
   flutter_swiper: ^1.1.6
+  path_provider: any
   animator: ^1.0.0+1
   icon_shadow: ^1.0.1
+  sqflite: ^1.1.7+1
   flutter:
     sdk: flutter
 
