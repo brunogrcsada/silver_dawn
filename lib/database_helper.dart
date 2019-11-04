@@ -1,19 +1,31 @@
+import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:silver_dawn/customers.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:path/path.dart';
 
 class DatabaseHelper {
 
   static DatabaseHelper _databaseHelper;    // Singleton DatabaseHelper
-  static Database _database;                // Singleton Database
+  static Database _database;// Singleton Database
+
+  Database customersDatabase;
 
   String customerTable = 'customer';
-  String colId = 'customer_id';
-  String colTitle = 'title';
-  String colDescription = 'description';
-  String colDate = 'date';
+
+  String customerID = 'customer_id';
+  String firstName = 'first_name';
+  String lastName = 'last_name';
+  String address = 'address';
+  String postCode = 'post_code';
+  String email = 'email';
+  String phoneNumber = 'phone_number';
+  String requirements = 'requirements';
 
   DatabaseHelper._createInstance(); // Named constructor to create instance of DatabaseHelper
 
@@ -34,71 +46,72 @@ class DatabaseHelper {
   }
 
   Future<Database> initializeDatabase() async {
-    // Get the directory path for both Android and iOS to store database.
-    Directory directory = await getApplicationDocumentsDirectory();
-    String path = directory.path + 'todos.db';
+    var databasesPath = await getDatabasesPath();
+    var path = join(databasesPath, "silver_dawn.db");
 
-    // Open/create the database at a given path
-    var todosDatabase = await openDatabase(path, version: 1, onCreate: _createDb);
-    return todosDatabase;
+    print(path);
+
+// delete existing if any
+    await deleteDatabase(path);
+
+// Make sure the parent directory exists
+    try {
+      await Directory(dirname(path)).create(recursive: true);
+    } catch (_) {}
+
+// Copy from asset
+    ByteData data = await rootBundle.load(join("assets", "silver_dawn.db"));
+    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    await new File(path).writeAsBytes(bytes, flush: true);
+
+    var customersDatabase = await openDatabase(path, version: 1);
+    return customersDatabase;
   }
 
-  void _createDb(Database db, int newVersion) async {
 
-    await db.execute('CREATE TABLE $todoTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, '
-        '$colDescription TEXT, $colDate TEXT)');
-  }
-
-  // Fetch Operation: Get all todo objects from database
-  Future<List<Map<String, dynamic>>> getTodoMapList() async {
+  Future<List<Map<String, dynamic>>> getCustomerMapList() async {
     Database db = await this.database;
-
-//		var result = await db.rawQuery('SELECT * FROM $todoTable order by $colTitle ASC');
-    var result = await db.query(todoTable, orderBy: '$colTitle ASC');
+    var result = await db.query(customerTable, orderBy: '$firstName ASC');
     return result;
   }
 
-  // Insert Operation: Insert a todo object to database
-  Future<int> insertTodo(Todo todo) async {
+  Future<int> insertCustomer(Customers customer) async {
     Database db = await this.database;
-    var result = await db.insert(todoTable, todo.toMap());
+    var result = await db.insert(customerTable, customer.toMap());
+
     return result;
   }
 
-  // Update Operation: Update a todo object and save it to database
-  Future<int> updateTodo(Todo todo) async {
+  Future<int> updateCustomer(Customers customer) async {
     var db = await this.database;
-    var result = await db.update(todoTable, todo.toMap(), where: '$colId = ?', whereArgs: [todo.id]);
+    var result = await db.update(customerTable, customer.toMap(), where: '$customerID = ?', whereArgs: [customer.customerID]);
     return result;
   }
 
-
-  // Delete Operation: Delete a todo object from database
-  Future<int> deleteTodo(int id) async {
+  Future<int> deleteCustomer(int id) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM $todoTable WHERE $colId = $id');
+    int result = await db.rawDelete('DELETE FROM $customerTable WHERE $customerID = $id');
     return result;
   }
 
-  // Get number of todo objects in database
-  Future<int> getCount() async {
+  Future<int> getCustomerCount() async {
     Database db = await this.database;
-    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $todoTable');
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $customerTable');
     int result = Sqflite.firstIntValue(x);
     return result;
   }
 
   // Get the 'Map List' [ List<Map> ] and convert it to 'todo List' [ List<Todo> ]
-  Future<List<Todo>> getTodoList() async {
+  Future<List<Customers>> getCustomerList() async {
 
-    var todoMapList = await getTodoMapList(); // Get 'Map List' from database
+    var todoMapList = await getCustomerMapList(); // Get 'Map List' from database
     int count = todoMapList.length;         // Count the number of map entries in db table
 
-    List<Todo> todoList = List<Todo>();
+    List<Customers> todoList = List<Customers>();
     // For loop to create a 'todo List' from a 'Map List'
     for (int i = 0; i < count; i++) {
-      todoList.add(Todo.fromMapObject(todoMapList[i]));
-    }
+      todoList.add(Customers.fromMapObject(todoMapList[i]));
+    } // Create list from database entries.
 
     return todoList;
   }

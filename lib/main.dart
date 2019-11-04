@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'LookupPage.dart';
 import 'TripPage.dart';
 import 'HomePage.dart';
+import 'database_helper.dart';
 
-void main() => runApp(MyApp());
+
+void main() async {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   static const String _title = 'Silver Dawn Coaches';

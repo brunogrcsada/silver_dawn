@@ -3,6 +3,8 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:animator/animator.dart';
 import 'package:silver_dawn/AddCustomer.dart';
+import 'package:silver_dawn/customers.dart';
+import 'Test.dart';
 
 class HomePage extends StatelessWidget { // This will be widgets for the home page.
   final Color color;
@@ -164,7 +166,8 @@ class MyWidget extends StatelessWidget {
           onTap: (){
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SecondRoute()),
+
+              MaterialPageRoute(builder: (context) => CustomerDetail(Customers('', '', '', '','',''), 'AddCustomer' )),
             );
           },
 

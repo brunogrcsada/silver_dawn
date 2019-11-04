@@ -1,57 +1,96 @@
+import 'database_helper.dart';
+
 class Customers {
+  int _customerID;
+  String _firstName;
+  String _lastName;
+  String _address;
+  String _postCode;
+  String _email;
+  String _phoneNumber;
+  String _requirements;
 
-  int _id;
-  String _title;
-  String _description;
-  String _date;
+  Customers(this._firstName, this._lastName, this._address, this._postCode, this._email, this._phoneNumber, [this._requirements] );
+  Customers.withId(this._customerID, this._firstName, this._lastName, this._address, this._postCode, this._email, this._phoneNumber, [this._requirements]);
 
-  Customers(this._title, this._date, [this._description] );
+  int get customerID => _customerID;
+  String get firstName => _firstName;
+  String get lastName => _lastName;
+  String get address => _address;
+  String get postCode => _postCode;
+  String get email => _email;
+  String get phoneNumber => _phoneNumber;
+  String get requirements => _requirements;
 
-  Customers.withId(this._id, this._title, this._date, [this._description]);
-
-  int get id => _id;
-
-  String get title => _title;
-
-  String get description => _description;
-
-  String get date => _date;
-
-
-  set title(String newTitle) {
-    if (newTitle.length <= 255) {
-      this._title = newTitle;
+  set firstName(String customerFirstName) {
+    if (customerFirstName.length <= 255) {
+      this._firstName = customerFirstName;
     }
   }
-  set description(String newDescription) {
-    if (newDescription.length <= 255) {
-      this._description = newDescription;
+  set lastName(String customerLastName) {
+    if (customerLastName.length <= 255) {
+      this._lastName = customerLastName;
     }
   }
 
-  set date(String newDate) {
-    this._date = newDate;
+  set address(String customerAddress) {
+    if (customerAddress.length <= 255) {
+      this._address = customerAddress;
+    }
+  }
+
+  set postCode(String customerPostCode) {
+    if (customerPostCode.length <= 255) {
+      this._postCode = customerPostCode;
+    }
+  }
+
+  set email(String customerEmail) {
+    if (customerEmail.length <= 255) {
+      this._email = customerEmail;
+    }
+  }
+
+  set phoneNumber(String customerPhoneNumber) {
+    if (customerPhoneNumber.length <= 255) {
+      this._phoneNumber = customerPhoneNumber;
+    }
+  }
+
+  set requirements(String customerRequirements) {
+    if (customerRequirements.length <= 255) {
+      this._requirements = customerRequirements;
+    }
   }
 
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
 
     var map = Map<String, dynamic>();
-    if (id != null) {
-      map['id'] = _id;
+    if (customerID != null) {
+      map['customer_id'] = _customerID;
     }
-    map['title'] = _title;
-    map['description'] = _description;
-    map['date'] = _date;
+    map['first_name'] = _firstName;
+    map['last_name'] = _lastName;
+    map['address'] = _address;
+    map['post_code'] = _postCode;
+    map['email'] = _email;
+    map['phone_number'] = _phoneNumber;
+    map['requirements'] = _requirements;
 
     return map;
   }
 
   // Extract a Note object from a Map object
   Customers.fromMapObject(Map<String, dynamic> map) {
-    this._id = map['id'];
-    this._title = map['title'];
-    this._description = map['description'];
-    this._date = map['date'];
+    this._customerID = map['customer_id'];
+    this._firstName = map['first_name'];
+    this._lastName = map['last_name'];
+    this._address = map['address'];
+    this._postCode = map['post_code'];
+    this._email = map['email'];
+    this._phoneNumber = map['phone_number'];
+    this._requirements = map['requirements'];
   }
+
 }
