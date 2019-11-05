@@ -2,17 +2,14 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:silver_dawn/customers.dart';
-import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
 
-  static DatabaseHelper _databaseHelper;    // Singleton DatabaseHelper
-  static Database _database;// Singleton Database
+  static DatabaseHelper _databaseHelper;
+  static Database _database;
 
   Database customersDatabase;
 
@@ -27,12 +24,12 @@ class DatabaseHelper {
   String phoneNumber = 'phone_number';
   String requirements = 'requirements';
 
-  DatabaseHelper._createInstance(); // Named constructor to create instance of DatabaseHelper
+  DatabaseHelper._createInstance();
 
   factory DatabaseHelper() {
 
     if (_databaseHelper == null) {
-      _databaseHelper = DatabaseHelper._createInstance(); // This is executed only once, singleton object
+      _databaseHelper = DatabaseHelper._createInstance();
     }
     return _databaseHelper;
   }
@@ -49,21 +46,25 @@ class DatabaseHelper {
     var databasesPath = await getDatabasesPath();
     var path = join(databasesPath, "silver_dawn.db");
 
-    print(path);
+    var exists = await databaseExists(path);
 
-// delete existing if any
-    await deleteDatabase(path);
+    if (!exists) {
+      print("Creating new copy from asset");
 
-// Make sure the parent directory exists
-    try {
-      await Directory(dirname(path)).create(recursive: true);
-    } catch (_) {}
+      try {
+        await Directory(dirname(path)).create(recursive: true);
+      } catch (_) {}
 
-// Copy from asset
-    ByteData data = await rootBundle.load(join("assets", "silver_dawn.db"));
-    List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    await new File(path).writeAsBytes(bytes, flush: true);
+      ByteData data = await rootBundle.load(join("assets", "silver_dawn.db"));
+      List<int> bytes =
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
+      await File(path).writeAsBytes(bytes, flush: true);
+
+    } else {
+      print("Opening existing database");
+    }
+// open the database
     var customersDatabase = await openDatabase(path, version: 1);
     return customersDatabase;
   }
@@ -101,19 +102,17 @@ class DatabaseHelper {
     return result;
   }
 
-  // Get the 'Map List' [ List<Map> ] and convert it to 'todo List' [ List<Todo> ]
   Future<List<Customers>> getCustomerList() async {
 
-    var todoMapList = await getCustomerMapList(); // Get 'Map List' from database
-    int count = todoMapList.length;         // Count the number of map entries in db table
+    var customerMapList = await getCustomerMapList();
+    int count = customerMapList.length;
 
-    List<Customers> todoList = List<Customers>();
-    // For loop to create a 'todo List' from a 'Map List'
+    List<Customers> customerList = List<Customers>();
     for (int i = 0; i < count; i++) {
-      todoList.add(Customers.fromMapObject(todoMapList[i]));
-    } // Create list from database entries.
+      customerList.add(Customers.fromMapObject(customerMapList[i]));
+    }
 
-    return todoList;
+    return customerList;
   }
 
 }

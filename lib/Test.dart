@@ -3,6 +3,51 @@ import 'package:flutter/material.dart';
 import 'customers.dart';
 import 'database_helper.dart';
 
+class CustomField extends StatefulWidget {
+  CustomField({Key key, this.icon, this.fieldHint, this.valueController}) : super(key: key);
+
+  final IconData icon;
+  final String fieldHint;
+  final TextEditingController valueController;
+
+  @override
+  _CustomFieldState createState() => new _CustomFieldState(icon, fieldHint, valueController);
+}
+
+
+class _CustomFieldState extends State<CustomField> {
+  IconData icon;
+  String fieldHint;
+  TextEditingController valueController;
+
+  _CustomFieldState(this.icon, this.fieldHint, this.valueController);
+
+  @override
+  Widget build(BuildContext context) {
+
+    TextStyle textStyle = Theme.of(context).textTheme.title;
+    // TODO: implement build
+    return Padding(
+      padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+      child: TextField(
+        controller: valueController,
+        style: textStyle,
+        onChanged: (value) {
+          debugPrint('Something changed in Title Text Field');
+          // updateFirstName();
+        },
+        decoration: InputDecoration(
+            labelText: 'First Name',
+            labelStyle: textStyle,
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0)
+            )
+        ),
+      ),
+    );
+  }
+}
+
 class CustomerDetail extends StatefulWidget {
 
   final String appBarTitle;
@@ -51,7 +96,7 @@ class CustomerDetailState extends State<CustomerDetail> {
 
     return WillPopScope(
 
-        onWillPop: () {
+        onWillPop:() {
           moveToLastScreen();
         },
 
@@ -81,7 +126,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updateFirstName();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Title',
+                        labelText: 'First Name',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)
@@ -100,7 +145,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updateLastName();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: 'Last Name',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)
@@ -119,7 +164,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updateAddress();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: 'Address',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)
@@ -138,7 +183,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updatePostCode();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: 'Postcode',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)
@@ -157,7 +202,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updateEmail();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: 'Email',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)
@@ -176,7 +221,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updatePhoneNumber();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: 'Phone Number',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)
@@ -196,7 +241,7 @@ class CustomerDetailState extends State<CustomerDetail> {
                       updateRequirements();
                     },
                     decoration: InputDecoration(
-                        labelText: 'Description',
+                        labelText: 'Special Requirements',
                         labelStyle: textStyle,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5.0)

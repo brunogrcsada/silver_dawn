@@ -3,13 +3,6 @@ import 'package:sqflite/sqflite.dart';
 
 //MyStructure(id:0,text: 'New Customer', icon: Icons.add_circle, directory: 'assets/customer.png')
 
-class FieldStructure {
-  final IconData icon;
-  final String fieldHint;
-
-  FieldStructure ({this.icon, this.fieldHint});
-}
-
 class CustomField extends StatefulWidget {
   CustomField({Key key, this.icon, this.fieldHint}) : super(key: key);
 
