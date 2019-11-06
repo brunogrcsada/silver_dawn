@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'database_helper.dart';
 
 class Customers {
@@ -21,12 +23,15 @@ class Customers {
   String get email => _email;
   String get phoneNumber => _phoneNumber;
   String get requirements => _requirements;
+  List get variableList => ["", "", "", "", "", "", ""];
+
 
   set firstName(String customerFirstName) {
     if (customerFirstName.length <= 255) {
       this._firstName = customerFirstName;
     }
   }
+
   set lastName(String customerLastName) {
     if (customerLastName.length <= 255) {
       this._lastName = customerLastName;
@@ -91,6 +96,7 @@ class Customers {
     this._email = map['email'];
     this._phoneNumber = map['phone_number'];
     this._requirements = map['requirements'];
+
   }
 
 }

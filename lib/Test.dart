@@ -1,26 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'customers.dart';
 import 'database_helper.dart';
 
 class CustomField extends StatefulWidget {
-  CustomField({Key key, this.icon, this.fieldHint, this.valueController}) : super(key: key);
+  CustomField({this.fieldHint, this.controllerValue});
 
-  final IconData icon;
   final String fieldHint;
-  final TextEditingController valueController;
+  final int controllerValue;
 
   @override
-  _CustomFieldState createState() => new _CustomFieldState(icon, fieldHint, valueController);
+  _CustomFieldState createState() => new _CustomFieldState(fieldHint, controllerValue);
 }
 
+final key = new GlobalKey<CustomerDetailState>();
 
 class _CustomFieldState extends State<CustomField> {
-  IconData icon;
   String fieldHint;
-  TextEditingController valueController;
+  int controllerValue;
 
-  _CustomFieldState(this.icon, this.fieldHint, this.valueController);
+  _CustomFieldState(this.fieldHint, this.controllerValue);
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +30,10 @@ class _CustomFieldState extends State<CustomField> {
     return Padding(
       padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
       child: TextField(
-        controller: valueController,
+        controller: key.currentState.textEditingControllers[controllerValue],
         style: textStyle,
-        onChanged: (value) {
-          debugPrint('Something changed in Title Text Field');
-          // updateFirstName();
-        },
         decoration: InputDecoration(
-            labelText: 'First Name',
+            labelText: fieldHint,
             labelStyle: textStyle,
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5.0)
@@ -48,18 +44,38 @@ class _CustomFieldState extends State<CustomField> {
   }
 }
 
-class CustomerDetail extends StatefulWidget {
+class globalSetup extends StatefulWidget {
 
   final String appBarTitle;
   final Customers customer;
 
-  CustomerDetail(this.customer, this.appBarTitle);
+  globalSetup(this.customer, this.appBarTitle);
 
   @override
-  State<StatefulWidget> createState() {
+  _globalSetupState createState() => new _globalSetupState(appBarTitle, customer);
+}
 
-    return CustomerDetailState(this.customer, this.appBarTitle);
+class _globalSetupState extends State<globalSetup>{
+  String appBarTitle;
+  Customers customer;
+
+  _globalSetupState(this.appBarTitle, this.customer);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return CustomerDetail(key: key, customer: customer, appBarTitle: appBarTitle);
   }
+}
+
+class CustomerDetail extends StatefulWidget {
+
+  CustomerDetail({Key key, this.customer, this.appBarTitle}) : super(key: key);
+
+  final String appBarTitle;
+  final Customers customer;
+
+  State createState() => new CustomerDetailState(this.customer, this.appBarTitle);
 }
 
 class CustomerDetailState extends State<CustomerDetail> {
@@ -69,30 +85,17 @@ class CustomerDetailState extends State<CustomerDetail> {
   String appBarTitle;
   Customers customer;
 
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController postCodeController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController requirementsController = TextEditingController();
-
+  var textEditingControllers = <TextEditingController>[];
 
   CustomerDetailState(this.customer, this.appBarTitle);
 
   @override
   Widget build(BuildContext context) {
 
-    TextStyle textStyle = Theme.of(context).textTheme.title;
-
-    firstNameController.text = customer.firstName;
-    lastNameController.text = customer.lastName;
-    addressController.text = customer.address;
-    postCodeController.text = customer.postCode;
-    emailController.text = customer.email;
-    phoneNumberController.text = customer.phoneNumber;
-    requirementsController.text = customer.requirements;
-
+    customer.variableList.forEach((str) {
+      var textEditingController = new TextEditingController(text: str);
+      textEditingControllers.add(textEditingController);
+    });
 
     return WillPopScope(
 
@@ -116,139 +119,13 @@ class CustomerDetailState extends State<CustomerDetail> {
             child: ListView(
               children: <Widget>[
 
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: firstNameController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Title Text Field');
-                      updateFirstName();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'First Name',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: lastNameController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Description Text Field');
-                      updateLastName();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Last Name',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: addressController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Description Text Field');
-                      updateAddress();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Address',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: postCodeController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Description Text Field');
-                      updatePostCode();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Postcode',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: emailController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Description Text Field');
-                      updateEmail();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: phoneNumberController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Description Text Field');
-                      updatePhoneNumber();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Phone Number',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
-
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: TextField(
-                    controller: requirementsController,
-                    style: textStyle,
-                    onChanged: (value) {
-                      debugPrint('Something changed in Description Text Field');
-                      updateRequirements();
-                    },
-                    decoration: InputDecoration(
-                        labelText: 'Special Requirements',
-                        labelStyle: textStyle,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0)
-                        )
-                    ),
-                  ),
-                ),
+                CustomField(fieldHint: "First Name", controllerValue: 0),
+                CustomField(fieldHint: "Last Name", controllerValue: 1),
+                CustomField(fieldHint: "Adress", controllerValue: 2),
+                CustomField(fieldHint: "Postcode", controllerValue: 3),
+                CustomField(fieldHint: "Email", controllerValue: 4),
+                CustomField(fieldHint: "Phone Number", controllerValue: 5),
+                CustomField(fieldHint: "Special Requirements", controllerValue: 6),
 
                 Padding(
                   padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
@@ -306,38 +183,16 @@ class CustomerDetailState extends State<CustomerDetail> {
     Navigator.pop(context, true);
   }
 
-  // Update the title of todo object
-  void updateFirstName(){
-    customer.firstName = firstNameController.text;
-  }
-
-  // Update the description of todo object
-  void updateLastName() {
-    customer.lastName = lastNameController.text;
-  }
-
-  void updateAddress() {
-    customer.address = addressController.text;
-  }
-
-  void updatePostCode() {
-    customer.postCode = postCodeController.text;
-  }
-
-  void updateEmail(){
-    customer.email = emailController.text;
-  }
-
-  void updatePhoneNumber() {
-    customer.phoneNumber = phoneNumberController.text;
-  }
-
-  void updateRequirements() {
-    customer.requirements = requirementsController.text;
-  }
-
   // Save data to database
   void _save() async {
+
+    customer.firstName = textEditingControllers[0].text;
+    customer.lastName = textEditingControllers[1].text;
+    customer.address = textEditingControllers[2].text;
+    customer.postCode = textEditingControllers[3].text;
+    customer.phoneNumber = textEditingControllers[4].text;
+    customer.email = textEditingControllers[5].text;
+    customer.requirements = textEditingControllers[6].text;
 
     moveToLastScreen();
 

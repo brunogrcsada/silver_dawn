@@ -3,6 +3,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:animator/animator.dart';
 import 'package:silver_dawn/AddCustomer.dart';
+import 'package:silver_dawn/Test.dart' as prefix0;
 import 'package:silver_dawn/customers.dart';
 import 'Test.dart';
 
@@ -167,7 +168,7 @@ class MyWidget extends StatelessWidget {
             Navigator.push(
               context,
 
-              MaterialPageRoute(builder: (context) => CustomerDetail(Customers('', '', '', '','',''), 'AddCustomer' )),
+              MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '','','', ''), 'AddCustomer' )),
             );
           },
 
