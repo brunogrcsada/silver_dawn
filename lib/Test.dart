@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart' as prefix0;
 import 'customers.dart';
 import 'database_helper.dart';
 
@@ -28,11 +27,15 @@ class _CustomFieldState extends State<CustomField> {
     TextStyle textStyle = Theme.of(context).textTheme.title;
     // TODO: implement build
     return Padding(
-      padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
+      padding: EdgeInsets.only(top: 20.0, bottom: 0.0, left: 10.0, right: 10.0),
       child: TextField(
         controller: key.currentState.textEditingControllers[controllerValue],
-        style: textStyle,
+        style: new TextStyle(
+            fontSize: MediaQuery.of(context).size.height * 0.05,
+            color: Colors.black
+        ),
         decoration: InputDecoration(
+          prefixIcon: Icon(Icons.add_circle),
             labelText: fieldHint,
             labelStyle: textStyle,
             border: OutlineInputBorder(
@@ -114,66 +117,104 @@ class CustomerDetailState extends State<CustomerDetail> {
             ),
           ),
 
-          body: Padding(
-            padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
-            child: ListView(
-              children: <Widget>[
-
-                CustomField(fieldHint: "First Name", controllerValue: 0),
-                CustomField(fieldHint: "Last Name", controllerValue: 1),
-                CustomField(fieldHint: "Adress", controllerValue: 2),
-                CustomField(fieldHint: "Postcode", controllerValue: 3),
-                CustomField(fieldHint: "Email", controllerValue: 4),
-                CustomField(fieldHint: "Phone Number", controllerValue: 5),
-                CustomField(fieldHint: "Special Requirements", controllerValue: 6),
-
-                Padding(
-                  padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
-                  child: Row(
+          body: Column(
+            children: <Widget>[
+              Expanded(
+                flex: 8,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+                  child: ListView(
                     children: <Widget>[
-                      Expanded(
-                        child: RaisedButton(
-                          color: Theme.of(context).primaryColorDark,
-                          textColor: Theme.of(context).primaryColorLight,
-                          child: Text(
-                            'Save',
-                            textScaleFactor: 1.5,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              debugPrint("Save button clicked");
-                              _save();
-                            });
-                          },
+
+                      Padding(
+                        padding: EdgeInsets.only(top: 0.0, bottom: 0.0, left: 10.0, right: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(top: 25.0, bottom: 0.0, left: 10.0, right: 10.0),
+                              child: Icon(
+                                  Icons.supervised_user_circle,
+                                  color: Colors.red,
+                                  size: 104,
+                              ),
+                            ),
+                            Expanded(
+                                child: CustomField(fieldHint: "First Name", controllerValue: 0),
+                            ), Expanded(
+                                child: CustomField(fieldHint: "Last Name", controllerValue: 1),
+                            )
+                          ],
                         ),
                       ),
 
-                      Container(width: 5.0,),
-
-                      Expanded(
-                        child: RaisedButton(
-                          color: Theme.of(context).primaryColorDark,
-                          textColor: Theme.of(context).primaryColorLight,
-                          child: Text(
-                            'Delete',
-                            textScaleFactor: 1.5,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              debugPrint("Delete button clicked");
-                              _delete();
-                            });
-                          },
+                      Padding(
+                        padding: EdgeInsets.only(top: 0.0, bottom: 0.0, left: 10.0, right: 10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: CustomField(fieldHint: "Adress Line 1", controllerValue: 2),
+                            ),
+                            Expanded(
+                              child: CustomField(fieldHint: "Adress Line 2", controllerValue: 3),
+                            )
+                          ],
                         ),
                       ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: CustomField(fieldHint: "Town/City", controllerValue: 4),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: CustomField(fieldHint: "Postcode", controllerValue: 5),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: CustomField(fieldHint: "Email", controllerValue: 6)
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: CustomField(fieldHint: "Phone Number", controllerValue: 7),
+                      ),
+
+                      Padding(
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                          child: CustomField(fieldHint: "Special Requirements", controllerValue: 8),
+                      ),
+
 
                     ],
                   ),
                 ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
 
+                  child: RaisedButton(
+                    color: Theme.of(context).primaryColorDark,
+                    textColor: Theme.of(context).primaryColorLight,
+                    child: Text(
+                      'Create Customer',
+                      textScaleFactor: 1.5,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        debugPrint("Save button clicked");
+                        _save();
+                      });
+                    },
+                  ),
+                ),
+              ),
 
-              ],
-            ),
+            ],
+
           ),
 
         ));
@@ -189,10 +230,12 @@ class CustomerDetailState extends State<CustomerDetail> {
     customer.firstName = textEditingControllers[0].text;
     customer.lastName = textEditingControllers[1].text;
     customer.address = textEditingControllers[2].text;
-    customer.postCode = textEditingControllers[3].text;
-    customer.phoneNumber = textEditingControllers[4].text;
-    customer.email = textEditingControllers[5].text;
-    customer.requirements = textEditingControllers[6].text;
+    customer.address2 = textEditingControllers[3].text;
+    customer.town = textEditingControllers[4].text;
+    customer.postCode = textEditingControllers[5].text;
+    customer.phoneNumber = textEditingControllers[6].text;
+    customer.email = textEditingControllers[7].text;
+    customer.requirements = textEditingControllers[8].text;
 
     moveToLastScreen();
 

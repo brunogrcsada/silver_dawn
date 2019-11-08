@@ -1,29 +1,29 @@
-import 'dart:ui';
-
-import 'database_helper.dart';
-
 class Customers {
   int _customerID;
   String _firstName;
   String _lastName;
   String _address;
+  String _address2;
+  String _town;
   String _postCode;
   String _email;
   String _phoneNumber;
   String _requirements;
 
-  Customers(this._firstName, this._lastName, this._address, this._postCode, this._email, this._phoneNumber, [this._requirements] );
-  Customers.withId(this._customerID, this._firstName, this._lastName, this._address, this._postCode, this._email, this._phoneNumber, [this._requirements]);
+  Customers(this._firstName, this._lastName, this._address, this._address2, this._town, this._postCode, this._email, this._phoneNumber, [this._requirements] );
+  Customers.withId(this._customerID, this._firstName, this._lastName, this._address, this._address2, this._town, this._postCode, this._email, this._phoneNumber, [this._requirements]);
 
   int get customerID => _customerID;
   String get firstName => _firstName;
   String get lastName => _lastName;
   String get address => _address;
+  String get address2 => _address2;
+  String get town => _town;
   String get postCode => _postCode;
   String get email => _email;
   String get phoneNumber => _phoneNumber;
   String get requirements => _requirements;
-  List get variableList => ["", "", "", "", "", "", ""];
+  List get variableList => ["", "", "", "", "", "", "", "", ""];
 
 
   set firstName(String customerFirstName) {
@@ -41,6 +41,18 @@ class Customers {
   set address(String customerAddress) {
     if (customerAddress.length <= 255) {
       this._address = customerAddress;
+    }
+  }
+
+  set address2(String customerAddress2) {
+    if (customerAddress2.length <= 255) {
+      this._address2 = customerAddress2;
+    }
+  }
+
+  set town(String customerTown) {
+    if (customerTown.length <= 255) {
+      this._town = customerTown;
     }
   }
 
@@ -68,7 +80,6 @@ class Customers {
     }
   }
 
-  // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
 
     var map = Map<String, dynamic>();
@@ -86,7 +97,6 @@ class Customers {
     return map;
   }
 
-  // Extract a Note object from a Map object
   Customers.fromMapObject(Map<String, dynamic> map) {
     this._customerID = map['customer_id'];
     this._firstName = map['first_name'];

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:animator/animator.dart';
-import 'package:silver_dawn/AddCustomer.dart';
-import 'package:silver_dawn/Test.dart' as prefix0;
+import 'package:silver_dawn/Test.dart';
 import 'package:silver_dawn/customers.dart';
 import 'Test.dart';
 
@@ -126,9 +125,10 @@ class _InnerSwiperState extends State<InnerSwiper> {
               child: new Swiper(
                 controller: controllers[index],
                 itemCount: widgetList.length,
-                viewportFraction: 0.8,
+                viewportFraction: MediaQuery.of(context).size.width * 0.0004,
+                // TODO: Dynamically modify card width based on the
                 scale: 0.9, //TODO: Change the scale (Refer to Stanley)
-                index: 0,
+                index: 1,
                 loop: false,
                 itemBuilder: (BuildContext context, int index) {
                   return MyWidget(widgetList[index]);
@@ -168,7 +168,7 @@ class MyWidget extends StatelessWidget {
             Navigator.push(
               context,
 
-              MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '','','', ''), 'AddCustomer' )),
+              MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', '', '', '','', ''), 'AddCustomer' )),
             );
           },
 
@@ -194,7 +194,7 @@ class MyWidget extends StatelessWidget {
                   Container(
                     margin: const EdgeInsets.only(top: 10.0),
                     child: Text(
-                      'New Customer',
+                      this.widgetStructure.text,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
