@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'LookupPage.dart';
+import 'ViewCustomers.dart';
 import 'TripPage.dart';
 import 'HomePage.dart';
 import 'database_helper.dart';
@@ -36,7 +37,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   final List<Widget> _widgetOptions = [
     HomePage(Colors.yellow), //TODO: This is how we call widgets using functions. Use it to your advantage.
-    LookupPage(Colors.deepOrange),
+    CustomerViewer(),
     TripPage(Colors.green, "meep") // TODO: THIS WORKS!!!!!
   ];
 

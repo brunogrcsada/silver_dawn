@@ -5,6 +5,7 @@ import 'package:animator/animator.dart';
 import 'package:silver_dawn/Test.dart';
 import 'package:silver_dawn/customers.dart';
 import 'Test.dart';
+import 'ViewCustomers.dart';
 
 class HomePage extends StatelessWidget { // This will be widgets for the home page.
   final Color color;
@@ -165,11 +166,23 @@ class MyWidget extends StatelessWidget {
 
         child: GestureDetector(
           onTap: (){
-            Navigator.push(
-              context,
+            if(widgetStructure.id == 0){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', '', '', '','', ''), 'AddCustomer' )),
+              );
+            } else if(widgetStructure.id == 1){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CustomerViewer()),
+              );
+            } else{
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CustomerViewer()),
+              );
+            }
 
-              MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', '', '', '','', ''), 'AddCustomer' )),
-            );
           },
 
           child: Stack(
