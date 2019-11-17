@@ -88,7 +88,8 @@ class Customers {
     }
     map['first_name'] = _firstName;
     map['last_name'] = _lastName;
-    map['address'] = _address;
+    map['address_1'] = _address;
+    map['address_2'] = _address2;
     map['post_code'] = _postCode;
     map['email'] = _email;
     map['phone_number'] = _phoneNumber;
@@ -101,7 +102,8 @@ class Customers {
     this._customerID = map['customer_id'];
     this._firstName = map['first_name'];
     this._lastName = map['last_name'];
-    this._address = map['address'];
+    this._address = map['address_1'];
+    this._address2 = map['address_2'];
     this._postCode = map['post_code'];
     this._email = map['email'];
     this._phoneNumber = map['phone_number'];

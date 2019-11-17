@@ -1,4 +1,6 @@
 import 'package:flutter/services.dart';
+import 'package:silver_dawn/bookings.dart';
+import 'trips.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import 'dart:io';
@@ -14,6 +16,7 @@ class DatabaseHelper {
   Database customersDatabase;
 
   String customerTable = 'customer';
+  String tripTable = 'trip';
 
   String customerID = 'customer_id';
   String firstName = 'first_name';
@@ -23,6 +26,13 @@ class DatabaseHelper {
   String email = 'email';
   String phoneNumber = 'phone_number';
   String requirements = 'requirements';
+
+  String tripID = 'trip_id';
+  String destinationForeign = 'destination_id';
+  String driverForeign = 'driver_id';
+  String date = 'date';
+  String duration = 'duration';
+  String cost = 'cost';
 
   DatabaseHelper._createInstance();
 
@@ -69,6 +79,7 @@ class DatabaseHelper {
     return customersDatabase;
   }
 
+  //-----------------------------Customer Queries-----------------------------//
 
   Future<List<Map<String, dynamic>>> getCustomerMapList() async {
     Database db = await this.database;
@@ -85,7 +96,8 @@ class DatabaseHelper {
 
   Future<int> updateCustomer(Customers customer) async {
     var db = await this.database;
-    var result = await db.update(customerTable, customer.toMap(), where: '$customerID = ?', whereArgs: [customer.customerID]);
+    var result = await db.update(customerTable, customer.toMap(),
+        where: '$customerID = ?', whereArgs: [customer.customerID]);
     return result;
   }
 
@@ -102,6 +114,45 @@ class DatabaseHelper {
     return result;
   }
 
+  //-----------------------------Trip Queries-----------------------------//
+
+  Future<List<Map<String, dynamic>>> getTripMapList() async {
+    Database db = await this.database;
+    var result = await db.query(tripTable, orderBy: '$date');
+
+    return result;
+  }
+
+  Future<int> insertTrip(Trips trip) async {
+    Database db = await this.database;
+    var result = await db.insert(tripTable, trip.toMap());
+
+    return result;
+  }
+
+  Future<int> updateTrip(Trips trip) async {
+    var db = await this.database;
+    var result = await db.update(tripTable, trip.toMap(),
+        where: '$tripID = ?', whereArgs: [trip.tripID]);
+    return result;
+  }
+
+  Future<int> deleteTrip(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM $tripTable WHERE $tripID = $id');
+    return result;
+  }
+
+  Future<int> getTripCount() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $tripID');
+    int result = Sqflite.firstIntValue(x);
+    return result;
+  }
+
+  //--------------------------------------//
+
+
   Future<List<Customers>> getCustomerList() async {
 
     var customerMapList = await getCustomerMapList();
@@ -114,5 +165,20 @@ class DatabaseHelper {
 
     return customerList;
   }
+
+  Future<List<Trips>> getTripList() async {
+
+    var tripMapList = await getTripMapList();
+    int count = tripMapList.length;
+
+    List<Trips> tripList = List<Trips>();
+    for (int i = 0; i < count; i++){
+      tripList.add(Trips.fromMapObject(tripMapList[i]));
+    }
+
+    return tripList;
+  }
+
+
 
 }

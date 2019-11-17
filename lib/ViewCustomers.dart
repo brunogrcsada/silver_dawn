@@ -14,12 +14,11 @@ class CustomerViewer extends StatefulWidget {
 class CustomerViewerState extends State<CustomerViewer> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Customers> customerList;
-  List<Customers> filteredList;
+  List<Customers> filteredList = [];
   int count = 0;
 
   TextEditingController controller = new TextEditingController();
   String filter;
-
 
   @override
   initState() {
@@ -49,19 +48,58 @@ class CustomerViewerState extends State<CustomerViewer> {
       updateListView();
     }
 
+    TextStyle textStyle = Theme.of(context).textTheme.title;
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 70, 76, 1),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
-            child: TextField(
-              decoration: new InputDecoration(
-                  labelText: "Search something",
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                  child: TextField(
+                    decoration: new InputDecoration(
+                        prefixIcon: Icon(Icons.verified_user),
+                        labelText: "First Name",
+                        fillColor: Colors.white,
+                        filled: true
+                    ),
+                    controller: controller,
+                  ),
+                ),
+              ),Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                  child: TextField(
+                    decoration: new InputDecoration(
+                        prefixIcon: Icon(Icons.verified_user),
+                        labelText: "Last Name",
+                        fillColor: Colors.white,
+                        filled: true
+                    ),
+                    controller: controller,
+                  ),
+                ),
+              ),Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                  child: TextField(
+                    decoration: new InputDecoration(
+                        prefixIcon: Icon(Icons.verified_user),
+                        labelText: "Post Code",
+                        fillColor: Colors.white,
+                        filled: true
+                    ),
+                    controller: controller,
+                  ),
+                ),
               ),
-              controller: controller,
-            ),
+            ],
           ),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 30.0),
@@ -88,7 +126,7 @@ class CustomerViewerState extends State<CustomerViewer> {
                             elevation: 4,
                             margin: EdgeInsets.zero,
                             clipBehavior: Clip.antiAlias,
-                            color: Color.fromRGBO(100, 100, 60, 0.5),
+                            color: Color.fromRGBO(255, 0, 0, 0.6),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14.0),
                             ),
