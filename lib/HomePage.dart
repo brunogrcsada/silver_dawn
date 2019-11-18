@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:animator/animator.dart';
+import 'package:silver_dawn/CreateTrip.dart';
 import 'package:silver_dawn/Test.dart';
 import 'package:silver_dawn/customers.dart';
+import 'package:silver_dawn/trips.dart';
+import 'package:silver_dawn/CreateTrip.dart';
 import 'Test.dart';
 import 'ViewCustomers.dart';
 
@@ -169,7 +172,7 @@ class MyWidget extends StatelessWidget {
             if(widgetStructure.id == 0){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', '', '', '','', ''), 'AddCustomer' )),
+                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', '', '', '','', ''), 'Add Customer' )),
               );
             } else if(widgetStructure.id == 1){
               Navigator.push(
@@ -179,7 +182,7 @@ class MyWidget extends StatelessWidget {
             } else{
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CustomerViewer()),
+                MaterialPageRoute(builder: (context) => NewTrip(Trips('', 0, 0, '', 0, 0), 'Add Trip' )),
               );
             }
 

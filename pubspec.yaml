@@ -19,7 +19,9 @@ environment:
 dependencies:
   flutter_swiper: ^1.1.6
   path_provider: any
+  date_format: ^1.0.8
   animator: ^1.0.0+1
+  flutter_datetime_picker: ^1.2.8
   icon_shadow: ^1.0.1
   sqflite: ^1.1.7+1
   flutter:

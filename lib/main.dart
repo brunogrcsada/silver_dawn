@@ -38,7 +38,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final List<Widget> _widgetOptions = [
     HomePage(Colors.yellow), //TODO: This is how we call widgets using functions. Use it to your advantage.
     CustomerViewer(),
-    TripPage(Colors.green, "meep") // TODO: THIS WORKS!!!!!
+    TripPage() // TODO: THIS WORKS!!!!!
   ];
 
   void _onItemTapped(int index) {

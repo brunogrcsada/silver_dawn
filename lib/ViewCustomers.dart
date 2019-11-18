@@ -235,51 +235,16 @@ class CustomerViewerState extends State<CustomerViewer> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          debugPrint('FAB clicked');
-        },
-        tooltip: 'Add Customer',
-        child: Icon(Icons.add),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 60.0),
+        child: FloatingActionButton(
+          onPressed: () {
+            debugPrint('FAB clicked');
+          },
+          tooltip: 'Add Customer',
+          child: Icon(Icons.add),
+        ),
       ),
-    );
-  }
-
-
-
-  ListView getTodoListView() {
-    return ListView.builder(
-      itemCount: count,
-      itemBuilder: (BuildContext context, int position) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: Text(getFirstLetter(this.customerList[position].firstName),
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            title: Text(this.customerList[position].firstName,
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text(this.customerList[position].address),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,),
-                  onTap: () {
-                    _delete(context, customerList[position]);
-                  },
-                ),
-              ],
-            ),
-            onTap: () {
-              debugPrint("ListTile Tapped");
-            },
-          ),
-        );
-      },
     );
   }
 
@@ -287,8 +252,8 @@ class CustomerViewerState extends State<CustomerViewer> {
     return title.substring(0, 2);
   }
 
-  void _delete(BuildContext context, Customers todo) async {
-    int result = await databaseHelper.deleteCustomer(todo.customerID);
+  void _delete(BuildContext context, Customers customer) async {
+    int result = await databaseHelper.deleteCustomer(customer.customerID);
     if (result != 0) {
       _showSnackBar(context, 'Customer Deleted Successfully');
       updateListView();

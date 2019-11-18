@@ -1,6 +1,6 @@
 class Trips{
   int _tripID;
-  int _destinationID;
+  String _destinationID;
   int _driverID;
   int _coachID;
   String _date;
@@ -11,7 +11,7 @@ class Trips{
   Trips.withId(this._tripID, this._destinationID, this._driverID, this._coachID, this._date, this._duration, this._cost);
 
   int get tripID => _tripID;
-  int get destinationID => _destinationID;
+  String get destinationID => _destinationID;
   int get driverID => _driverID;
   int get coachID => _coachID;
   String get date => _date; //TODO: Convert to date object.
@@ -19,8 +19,8 @@ class Trips{
   double get cost => _cost;
   List get variableList => ["","","","","",""];
 
-  set destinationID(int destinationIdentification){
-    this._tripID = destinationIdentification;
+  set destinationID(String destinationIdentification){
+    this._destinationID = destinationIdentification;
   }
 
   set driverID(int driverIdentification){
@@ -49,7 +49,7 @@ class Trips{
     if (tripID != null) {
       map['trip_id'] = _tripID;
     }
-    map['destination_id'] = _destinationID;
+    map['name'] = _destinationID;
     map['driver_id'] = _driverID;
     map['coach_id'] = _coachID;
     map['date'] = _date;
@@ -61,7 +61,7 @@ class Trips{
 
   Trips.fromMapObject(Map<String, dynamic> map) {
     this._tripID = map['trip_id'];
-    this._destinationID = map['destination_id'];
+    this._destinationID = map['name'];
     this._driverID = map['driver_id'];
     this._coachID = map['coach_id'];
     this._date = map['date'];
