@@ -1,26 +1,26 @@
-class Destinations {
-  int _destinationID;
-  String _name;
-  String _hotel;
+class Drivers {
+  int _driverID;
+  String _firstName;
+  String _lastName;
 
-  Destinations(this._name, [this._hotel]);
-  Destinations.withId(this._destinationID, this._name, [this._hotel]);
+  Drivers(this._firstName, [this._lastName]);
+  Drivers.withId(this._driverID, this._firstName, [this._lastName]);
 
-  int get destinationID => _destinationID;
-  String get name => _name;
-  String get hotel => _hotel;
+  int get driverID => _driverID;
+  String get firstName => _firstName;
+  String get lastName => _lastName;
   List get variableList => ["", ""];
 
 
-  set name(String destinationName) {
-    if (destinationName.length <= 255) {
-      this._name = destinationName;
+  set firstName(String driverFirstName) {
+    if (driverFirstName.length <= 50) {
+      this._firstName = driverFirstName;
     }
   }
 
-  set hotel(String destinationHotel) {
-    if (destinationHotel.length <= 255) {
-      this._hotel = destinationHotel;
+  set hotel(String driverLastName) {
+    if (driverLastName.length <= 50) {
+      this._lastName = driverLastName;
     }
   }
 
@@ -28,19 +28,19 @@ class Destinations {
   Map<String, dynamic> toMap() {
 
     var map = Map<String, dynamic>();
-    if (destinationID != null) {
-      map['destination_id'] = _destinationID;
+    if (driverID != null) {
+      map['driver_id'] = _driverID;
     }
-    map['name'] = _name;
-    map['hotel'] = _hotel;
+    map['first_name'] = _firstName;
+    map['last_name'] = _lastName;
 
     return map;
   }
 
-  Destinations.fromMapObject(Map<String, dynamic> map) {
-    this._destinationID = map['destination_id'];
-    this._name = map['name'];
-    this._hotel = map['hotel'];
+  Drivers.fromMapObject(Map<String, dynamic> map) {
+    this._driverID = map['driver_id'];
+    this._firstName = map['first_name'];
+    this._lastName = map['last_name'];
 
   }
 

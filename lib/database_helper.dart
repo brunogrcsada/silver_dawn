@@ -1,9 +1,12 @@
 import 'package:flutter/services.dart';
 import 'package:silver_dawn/bookings.dart';
+import 'package:silver_dawn/coaches.dart';
+import 'package:silver_dawn/drivers.dart';
 import 'package:silver_dawn/destinations.dart';
 import 'trips.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
+import 'trip_lookup.dart';
 import 'dart:io';
 import 'package:silver_dawn/customers.dart';
 import 'dart:typed_data';
@@ -19,6 +22,8 @@ class DatabaseHelper {
   String customerTable = 'customer';
   String tripTable = 'trip';
   String destinationTable = 'destination';
+  String coachTable = 'coach';
+  String driverTable = 'driver';
 
   String customerID = 'customer_id';
   String firstName = 'first_name';
@@ -39,6 +44,14 @@ class DatabaseHelper {
   String destinationID = 'destination_id';
   String name = 'name';
   String hotel = 'hotel';
+
+  String driverID = 'driver_id';
+  String driverFirstName = 'first_name';
+  String driverLastName = 'last_name';
+
+  String coachID = 'coach_id';
+  String registration = 'registration';
+  String seats = 'seats';
 
   DatabaseHelper._createInstance();
 
@@ -199,6 +212,116 @@ class DatabaseHelper {
   }
 
   //--------------------------------------//
+
+  //-----------------------------Coach Queries-----------------------------//
+
+  Future<List<Map<String, dynamic>>> getCoachMapList() async {
+    Database db = await this.database;
+    var result = await db.query(coachTable, orderBy: '$registration ASC');
+    return result;
+  }
+
+  Future<int> insertCoach(Coaches coach) async {
+    Database db = await this.database;
+    var result = await db.insert(coachTable, coach.toMap());
+
+    return result;
+  }
+
+  Future<int> updateCoach(Coaches coach) async {
+    var db = await this.database;
+    var result = await db.update(coachTable, coach.toMap(),
+        where: '$coachID = ?', whereArgs: [coach.coachID]);
+    return result;
+  }
+
+  Future<int> deleteCoach(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM $coachTable WHERE $coachID = $id');
+    return result;
+  }
+
+  Future<int> getCoachCount() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $coachID');
+    int result = Sqflite.firstIntValue(x);
+    return result;
+  }
+
+  //--------------------------------------//
+
+  //-----------------------------Driver Queries-----------------------------//
+
+  Future<List<Map<String, dynamic>>> getDriverMapList() async {
+    Database db = await this.database;
+    var result = await db.query(driverTable, orderBy: '$driverFirstName ASC');
+    return result;
+  }
+
+  Future<int> insertDriver(Drivers driver) async {
+    Database db = await this.database;
+    var result = await db.insert(driverTable, driver.toMap());
+
+    return result;
+  }
+
+  Future<int> updateDriver(Drivers driver) async {
+    var db = await this.database;
+    var result = await db.update(driverTable, driver.toMap(),
+        where: '$driverID = ?', whereArgs: [driver.driverID]);
+    return result;
+  }
+
+  Future<int> deleteDriver(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM $driverTable WHERE $driverID = $id');
+    return result;
+  }
+
+  Future<int> getDriverCount() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $driverID');
+    int result = Sqflite.firstIntValue(x);
+    return result;
+  }
+
+  //--------------------------------------//
+
+  Future <List<Drivers>> getDriverList() async{
+    var driverMapList = await getDriverMapList();
+    int count = driverMapList.length;
+
+    List<Drivers> driverList = List<Drivers>();
+    for (int i = 0; i < count; i++){
+      driverList.add(Drivers.fromMapObject(driverMapList[i]));
+    }
+
+    return driverList;
+  }
+
+  Future <List<TripLookup>> getTripLookup() async{
+    var tripLookupMapList = await getTripMapList();
+    int count = tripLookupMapList.length;
+
+    List<TripLookup> lookupList = List<TripLookup>();
+    for (int i = 0; i < count; i++){
+      lookupList.add(TripLookup.fromMapObject(tripLookupMapList[i]));
+    }
+
+    return lookupList;
+  }
+
+  Future<List<Coaches>> getCoachList() async{
+    var coachMapList = await getCoachMapList();
+    int count = coachMapList.length;
+
+    List<Coaches> coachList = List<Coaches>();
+    for (int i = 0; i < count; i++){
+      coachList.add(Coaches.fromMapObject(coachMapList[i]));
+    }
+
+    return coachList;
+  }
 
   Future<List<Destinations>> getDestinationList() async{
     var destinationMapList = await getDestinationMapList();

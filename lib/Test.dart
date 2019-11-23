@@ -152,10 +152,10 @@ class CustomerDetailState extends State<CustomerDetail> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                              child: CustomField(fieldHint: "Adress Line 1", controllerValue: 2),
+                              child: CustomField(fieldHint: "Address Line 1", controllerValue: 2),
                             ),
                             Expanded(
-                              child: CustomField(fieldHint: "Adress Line 2", controllerValue: 3),
+                              child: CustomField(fieldHint: "Address Line 2", controllerValue: 3),
                             )
                           ],
                         ),

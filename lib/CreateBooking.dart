@@ -1,72 +1,58 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:silver_dawn/coaches.dart';
+import 'package:silver_dawn/bookings.dart';
 import 'trips.dart';
-import 'destinations.dart';
-import 'drivers.dart';
-import 'package:intl/intl.dart';
+import 'customers.dart';
 import 'database_helper.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:sqflite/sqflite.dart';
 
-class NewTrip extends StatefulWidget {
+class NewBooking extends StatefulWidget {
 
   final String appBarTitle;
-  final Trips customer;
+  final Bookings customer;
 
-  NewTrip(this.customer, this.appBarTitle);
+  NewBooking(this.customer, this.appBarTitle);
 
   @override
-  _NewTripState createState() => new _NewTripState(appBarTitle, customer);
+  _NewBookingState createState() => new _NewBookingState(appBarTitle, customer);
 
 }
 
-class _NewTripState extends State<NewTrip> {
+class _NewBookingState extends State<NewBooking> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
 
-  List<Destinations> destinationList;
-  List<Coaches> coachList;
-  List<Drivers> driverList;
+  List<Customers> customerList;
+  List<Trips> tripList;
 
-  var totalCostController = new TextEditingController();
-  var tripDurationController = new TextEditingController();
-
-  int count = 0;
-  int driverCount = 0;
-  int coachCount = 0;
-
-  DateTime currentDate;
-
-  int currentDestination;
-  int currentDriver;
-  int currentCoach;
+  int customerCount = 0;
+  int tripCount = 0;
 
   String appBarTitle;
-  Trips trip;
+  Bookings customer;
 
   var textEditingControllers = <TextEditingController>[];
 
-  _NewTripState(this.appBarTitle, this.trip);
+  _NewBookingState(this.appBarTitle, this.customer);
 
   @override
   Widget build(BuildContext context) {
 
-    if (destinationList == null) {
-      destinationList = List<Destinations>();
-      updateListView();
+    customer.variableList.forEach((str) {
+      var textEditingController = new TextEditingController(text: str);
+      textEditingControllers.add(textEditingController);
+    });
+
+    if (customerList == null) {
+      customerList = List<Customers>();
+      updateCustomerList();
     }
 
-    if (coachList == null) {
-      coachList = List<Coaches>();
-      updateCoachListView();
+    if (tripList == null) {
+      tripList = List<Trips>();
+      updateTripList();
     }
-
-    if (driverList == null) {
-      driverList = List<Drivers>();
-      updateDriverListView();
-    }
-
 
     return WillPopScope(
 
@@ -102,7 +88,7 @@ class _NewTripState extends State<NewTrip> {
                             },
                             child: Container(
                               height: MediaQuery.of(context).size.height,
-                              child: getTodoListView(),
+                              child: getTripListView(),
                             ),
                           ),
                         ),
@@ -120,7 +106,7 @@ class _NewTripState extends State<NewTrip> {
                                     splashColor: Colors.blue.withAlpha(30),
                                     child: Container(
                                       height: MediaQuery.of(context).size.height,
-                                      child: getCoachListView(),
+                                      child: getCustomerListView(),
                                     ),
                                   ),
                                 ),
@@ -137,7 +123,7 @@ class _NewTripState extends State<NewTrip> {
                                     },
                                     child: Container(
                                       height: MediaQuery.of(context).size.height,
-                                      child: getDriverListView(),
+                                      child: Text("")
                                     ),
                                   ),
                                 ),
@@ -161,20 +147,18 @@ class _NewTripState extends State<NewTrip> {
                                       print('Card tapped.');
                                     },
                                     child: Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
-                                            child: TextField(
-                                              controller: totalCostController,
-
-                                              decoration: new InputDecoration(
-                                                  prefixIcon: Icon(Icons.credit_card),
-                                                  labelText: "Total Cost",
-                                                  fillColor: Colors.white,
-                                                  filled: true
-                                              ),
-                                              //controller: controller,
-                                            ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                                        child: TextField(
+                                          decoration: new InputDecoration(
+                                              prefixIcon: Icon(Icons.credit_card),
+                                              labelText: "Total Cost",
+                                              fillColor: Colors.white,
+                                              filled: true
                                           ),
+                                          //controller: controller,
+                                        ),
+                                      ),
 
                                     ),
                                   ),
@@ -194,7 +178,6 @@ class _NewTripState extends State<NewTrip> {
                                       child: Padding(
                                         padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                                         child: TextField(
-                                          controller: tripDurationController,
                                           decoration: new InputDecoration(
                                               prefixIcon: Icon(Icons.calendar_today),
                                               labelText: "Trip Duration (Days)",
@@ -236,7 +219,6 @@ class _NewTripState extends State<NewTrip> {
                                                   print('change $date');
                                                 }, onConfirm: (date) {
                                                   print('confirm $date');
-                                                  currentDate = date;
                                                 }, currentTime: DateTime.now(), locale: LocaleType.en);
                                           },
                                           child: Text(
@@ -247,39 +229,7 @@ class _NewTripState extends State<NewTrip> {
                                   ),
                                 ),
                               ),
-                            ), Expanded(
-                              flex: 1,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.amber.withAlpha(30),
-                                    onTap: (){
-                                      print("Create new Trip");
-                                    },
-                                    child: Container(
-                                      child: FlatButton(
-                                          color: Colors.red,
-                                          textColor: Colors.white,
-                                          disabledColor: Colors.grey,
-                                          disabledTextColor: Colors.black,
-                                          padding: EdgeInsets.all(8.0),
-                                          splashColor: Colors.blueAccent,
-
-                                          onPressed: () {
-                                            print("Woop");
-                                            _save();
-
-                                            },
-                                          child: Text(
-                                            'Create Trip',
-                                            style: TextStyle(color: Colors.white, fontSize: 30),
-                                          )),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -296,84 +246,34 @@ class _NewTripState extends State<NewTrip> {
 
   }
 
-  ListView getTodoListView() {
+  ListView getCustomerListView() {
     return ListView.builder(
-      itemCount: count,
+      itemCount: customerCount,
       itemBuilder: (BuildContext context, int position) {
-
-        var selectedColor = const Color.fromRGBO(255, 255, 255, 1);
-
-        if(currentDestination == position){
-          selectedColor = Colors.amber;
-        }
-
-        return Container(
-          child: Card(
-            color: selectedColor,
-            elevation: 2.0,
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.amber,
-                child: Text(this.destinationList[position].name,
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              title: Text(this.destinationList[position].name,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  GestureDetector(
-                    child: Icon(Icons.delete,color: Colors.red,),
-
-                  ),
-                ],
-              ),
-              onTap: () {
-                setState(() {
-                  currentDestination = position;
-                });
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  ListView getCoachListView() {
-    return ListView.builder(
-      itemCount: coachCount,
-      itemBuilder: (BuildContext context, int position) {
-
-        var selectedColor = const Color.fromRGBO(255, 255, 255, 1);
-
-        if(currentCoach == position){
-          selectedColor = Colors.amber;
-        }
-
         return Card(
-          color: selectedColor,
+          color: Colors.white,
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.amber,
-              child: Text(this.coachList[position].registration,
+              child: Text(this.customerList[position].firstName,
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            title: Text(this.coachList[position].seats.toString(),
+            title: Text(this.customerList[position].lastName,
                 style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,)
+                  child: Icon(Icons.delete,color: Colors.red,),
+                  onTap: () {
+                    //_delete(context, customerList[position]);
+                  },
                 ),
               ],
             ),
             onTap: () {
-              setState(() {
-                currentCoach = position;
-              });
+              debugPrint("ListTile Tapped");
             },
           ),
         );
@@ -381,138 +281,71 @@ class _NewTripState extends State<NewTrip> {
     );
   }
 
-  ListView getDriverListView() {
+  ListView getTripListView() {
     return ListView.builder(
-      itemCount: driverCount,
+      itemCount: tripCount,
       itemBuilder: (BuildContext context, int position) {
-
-        var selectedColor = const Color.fromRGBO(255, 255, 255, 1);
-
-        if(currentDriver == position){
-          selectedColor = Colors.amber;
-        }
-
         return Card(
-          color: selectedColor,
+
+          color: Colors.white,
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.amber,
-              child: Text(this.driverList[position].firstName,
+              child: Text(this.tripList[position].destinationID.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            title: Text(this.driverList[position].lastName,
+            title: Text(this.tripList[position].coachID.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,)
+                  child: Icon(Icons.delete,color: Colors.red,),
+                  onTap: () {
+                    setState(() {
+
+                    });
+                    //_delete(context, customerList[position]);
+                  },
                 ),
               ],
             ),
             onTap: () {
-              setState(() {
-                currentDriver = position;
-              });
+              debugPrint("ListTile Tapped");
             },
           ),
         );
       },
     );
   }
-
 
   void moveToLastScreen() {
     Navigator.pop(context, true);
   }
 
-  void _save() async {
-
-    trip.destinationID = currentDestination;
-    trip.coachID = currentCoach;
-    trip.driverID = currentDriver;
-    trip.cost = double.parse(totalCostController.text);
-    trip.duration = double.parse(tripDurationController.text);
-
-    String formattedDate = DateFormat('dd/MM/yyyy').format(currentDate);
-    trip.date = formattedDate;
-
-    moveToLastScreen();
-
-    int result;
-    if (trip.tripID != null) {  // Case 1: Update operation
-      result = await databaseHelper.updateTrip(trip);
-    } else { // Case 2: Insert Operation
-      result = await databaseHelper.insertTrip(trip);
-    }
-
-    if (result != 0) {  // Success
-      _showAlertDialog('Status', 'Trip Saved Successfully');
-    } else {  // Failure
-      _showAlertDialog('Status', 'Problem Saving Trip');
-    }
-
-  }
-
-
-  /*
-  void _delete() async {
-
-    moveToLastScreen();
-
-    if (customer.customerID == null) {
-      _showAlertDialog('Status', 'No Customer was deleted');
-      return;
-    }
-
-    int result = await helper.deleteCustomer(customer.customerID);
-    if (result != 0) {
-      _showAlertDialog('Status', 'Customer Deleted Successfully');
-    } else {
-      _showAlertDialog('Status', 'Error Occured while Deleting Customer');
-    }
-  }
-  */
-
-  void updateListView() {
+  void updateCustomerList() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Destinations>> destinationListFuture = databaseHelper.getDestinationList();
-      destinationListFuture.then((destinationList) {
+      Future<List<Customers>> customerListFuture = databaseHelper.getCustomerList();
+      customerListFuture.then((customerList) {
         setState(() {
-          this.destinationList = destinationList;
-
-          this.count = destinationList.length;
+          this.customerList = customerList;
+          this.customerCount = customerList.length;
         });
       });
     });
   }
 
-  void updateDriverListView(){
+  void updateTripList(){
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Drivers>> driverListFuture = databaseHelper.getDriverList();
-      driverListFuture.then((driverList) {
+      Future<List<Trips>> tripListFuture = databaseHelper.getTripList();
+      tripListFuture.then((tripList) {
         setState(() {
 
-          this.driverList = driverList;
-          this.driverCount = driverList.length;
-
-        });
-      });
-    });
-  }
-
-  void updateCoachListView(){
-    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-    dbFuture.then((database) {
-      Future<List<Coaches>> coachListFuture = databaseHelper.getCoachList();
-      coachListFuture.then((coachList) {
-        setState(() {
-
-          this.coachList = coachList;
-          this.coachCount = coachList.length;
+          this.tripList = tripList;
+          this.tripCount = tripList.length;
 
         });
       });

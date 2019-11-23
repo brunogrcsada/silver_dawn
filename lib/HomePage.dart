@@ -3,7 +3,9 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:animator/animator.dart';
 import 'package:silver_dawn/CreateTrip.dart';
+import 'package:silver_dawn/CreateBooking.dart';
 import 'package:silver_dawn/Test.dart';
+import 'package:silver_dawn/bookings.dart';
 import 'package:silver_dawn/customers.dart';
 import 'package:silver_dawn/trips.dart';
 import 'package:silver_dawn/CreateTrip.dart';
@@ -124,7 +126,6 @@ class _InnerSwiperState extends State<InnerSwiper> {
       itemBuilder: (BuildContext context, int index) {
         return new Column(
           children: <Widget>[
-
             new SizedBox(
               child: new Swiper(
                 controller: controllers[index],
@@ -172,17 +173,17 @@ class MyWidget extends StatelessWidget {
             if(widgetStructure.id == 0){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', '', '', '','', ''), 'Add Customer' )),
+                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', "", "", '','', ''), 'Add Customer' )),
               );
             } else if(widgetStructure.id == 1){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CustomerViewer()),
+                MaterialPageRoute(builder: (context) => NewBooking(Bookings(0,0,0,''), 'Create Booking')),
               );
             } else{
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NewTrip(Trips('', 0, 0, '', 0, 0), 'Add Trip' )),
+                MaterialPageRoute(builder: (context) => NewTrip(Trips(0, 0, 0, '', 0, 0), 'Add Trip' )),
               );
             }
 

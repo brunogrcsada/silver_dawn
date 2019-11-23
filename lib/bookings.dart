@@ -5,8 +5,8 @@ class Bookings {
   int _passengerNumber;
   String _requirements;
 
-  Bookings(this._customerID, this._passengerNumber, [this._requirements]);
-  Bookings.withId(this._bookingID, this._passengerNumber, [this._requirements]);
+  Bookings(this._customerID, this._tripID, this._passengerNumber, [this._requirements]);
+  Bookings.withId(this._bookingID, this._customerID, this._tripID, this._passengerNumber, [this._requirements]);
 
   int get bookingID => _bookingID;
   int get customerID => _customerID;

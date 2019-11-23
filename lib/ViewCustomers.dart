@@ -15,6 +15,7 @@ class CustomerViewerState extends State<CustomerViewer> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Customers> customerList;
   List<Customers> filteredList = [];
+  List<Customers> filteredLastName = [];
   int count = 0;
 
   TextEditingController controller = new TextEditingController();
@@ -165,7 +166,7 @@ class CustomerViewerState extends State<CustomerViewer> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 10.0),
                                     child: Text(
-                                      this.filteredList[index].email, //TODO: Should be phone number, not email.
+                                      this.filteredList[index].phoneNumber, //TODO: Should be phone number, not email.
                                       textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(fontSize: 23)
@@ -190,7 +191,7 @@ class CustomerViewerState extends State<CustomerViewer> {
                                       child: Padding(
                                         padding: EdgeInsets.only(right: 10.0, left: 10.0),
                                         child: Text(
-                                            this.filteredList[index].phoneNumber, //TODO: Should be phone number, not email.
+                                            this.filteredList[index].email, //TODO: Should be phone number, not email.
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(fontSize: 23)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icon_shadow/icon_shadow.dart';
+import 'package:silver_dawn/trip_lookup.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'trips.dart';
@@ -15,8 +16,8 @@ class TripPage extends StatefulWidget {
 
 class TripPageState extends State<TripPage> {
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Trips> tripList;
-  List<Trips> filteredList = [];
+  List<TripLookup> tripList;
+  List<TripLookup> filteredList = [];
   int count = 0;
 
   TextEditingController controller = new TextEditingController();
@@ -26,7 +27,6 @@ class TripPageState extends State<TripPage> {
   initState() {
     final now = DateTime.now();
     concurrentList(now);
-
   }
 
   @override
@@ -38,7 +38,7 @@ class TripPageState extends State<TripPage> {
     final double itemWidth = size.width / 2;
 
     if (tripList == null) {
-      tripList = List<Trips>();
+      tripList = List<TripLookup>();
       updateListView();
     }
 
@@ -56,8 +56,8 @@ class TripPageState extends State<TripPage> {
                   padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.verified_user),
-                        labelText: "First Name",
+                        prefixIcon: Icon(Icons.location_on),
+                        labelText: "Location",
                         fillColor: Colors.white,
                         filled: true
                     ),
@@ -69,8 +69,8 @@ class TripPageState extends State<TripPage> {
                   padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.verified_user),
-                        labelText: "Last Name",
+                        prefixIcon: Icon(Icons.card_membership),
+                        labelText: "Cost",
                         fillColor: Colors.white,
                         filled: true
                     ),
@@ -82,8 +82,8 @@ class TripPageState extends State<TripPage> {
                   padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.verified_user),
-                        labelText: "Post Code",
+                        prefixIcon: Icon(Icons.access_time),
+                        labelText: "Duration",
                         fillColor: Colors.white,
                         filled: true
                     ),
@@ -182,7 +182,7 @@ class TripPageState extends State<TripPage> {
                                       child: Padding(
                                         padding: EdgeInsets.only(right: 10.0, left: 10.0),
                                         child: Text(
-                                            "£ " + this.filteredList[index].cost.toString(), //TODO: Should be phone number, not email.
+                                            "£ " + this.filteredList[index].cost.toString() + "0", //TODO: Should be phone number, not email.
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(fontSize: 23)
@@ -272,7 +272,7 @@ class TripPageState extends State<TripPage> {
   void updateListView() {
     final Future<Database> dataInstance = databaseHelper.initializeDatabase();
     dataInstance.then((database) {
-      Future<List<Trips>> customerListFuture = databaseHelper.getTripList();
+      Future<List<TripLookup>> customerListFuture = databaseHelper.getTripLookup();
       customerListFuture.then((tripList) {
         setState(() {
 
