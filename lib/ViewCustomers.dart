@@ -19,19 +19,30 @@ class CustomerViewerState extends State<CustomerViewer> {
   int count = 0;
 
   TextEditingController controller = new TextEditingController();
+  TextEditingController postCodeController = new TextEditingController();
+
   String filter;
+  String postCodeFilter;
 
   @override
   initState() {
     controller.addListener(() {
       setState(() {
         filter = controller.text;
+        postCodeFilter = postCodeController.text;
 
         if(filter != null && filter != ""){
           concurrentList(filter);
         } else{
           resetList();
         }
+
+        if(postCodeFilter != null && postCodeFilter != ""){
+          concurrentList(postCodeFilter);
+        } else{
+          resetList();
+        }
+
       });
     });
   }
@@ -216,7 +227,7 @@ class CustomerViewerState extends State<CustomerViewer> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 10.0),
                                     child: Text(
-                                        this.filteredList[index].address, //TODO: Should be phone number, not email.
+                                        this.filteredList[index].postCode, //TODO: Should be phone number, not email.
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(fontSize: 23)

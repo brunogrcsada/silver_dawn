@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:silver_dawn/bookings.dart';
+import 'package:silver_dawn/trip_lookup.dart';
 import 'trips.dart';
 import 'customers.dart';
 import 'database_helper.dart';
@@ -24,10 +25,13 @@ class _NewBookingState extends State<NewBooking> {
   DatabaseHelper databaseHelper = DatabaseHelper();
 
   List<Customers> customerList;
-  List<Trips> tripList;
+  List<TripLookup> tripList;
 
   int customerCount = 0;
   int tripCount = 0;
+
+  int currentTrip;
+  int currentCustomer;
 
   String appBarTitle;
   Bookings customer;
@@ -50,7 +54,7 @@ class _NewBookingState extends State<NewBooking> {
     }
 
     if (tripList == null) {
-      tripList = List<Trips>();
+      tripList = List<TripLookup>();
       updateTripList();
     }
 
@@ -61,6 +65,7 @@ class _NewBookingState extends State<NewBooking> {
         },
 
         child: Scaffold(
+          backgroundColor: Color.fromRGBO(55, 57, 96, 1),
           appBar: AppBar(
             title: Text(appBarTitle),
             leading: IconButton(icon: Icon(
@@ -78,114 +83,91 @@ class _NewBookingState extends State<NewBooking> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Expanded(
-                      flex: 2,
                       child: Container(
-                        child: Card(
-                          child: InkWell(
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              print('Card tapped.');
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height,
-                              child: getTripListView(),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),Expanded(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    child: Container(
-                                      height: MediaQuery.of(context).size.height,
-                                      child: getCustomerListView(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    onTap: () {
-                                      print('Card tapped.');
-                                    },
-                                    child: Container(
-                                      height: MediaQuery.of(context).size.height,
-                                      child: Text("")
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),Expanded(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: Column(
-                          children: <Widget>[
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    onTap: () {
-                                      print('Card tapped.');
-                                    },
-                                    child: Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
-                                        child: TextField(
-                                          decoration: new InputDecoration(
-                                              prefixIcon: Icon(Icons.credit_card),
-                                              labelText: "Total Cost",
-                                              fillColor: Colors.white,
-                                              filled: true
-                                          ),
-                                          //controller: controller,
-                                        ),
-                                      ),
 
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+
+                              child: InkWell(
+                                splashColor: Colors.blue.withAlpha(30),
+                                onTap: () {
+                                  print('Card tapped.');
+                                },
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 60,
+                                      child: Card(
+                                        margin: EdgeInsets.zero,
+                                        clipBehavior: Clip.antiAlias,
+                                        color: Color.fromRGBO(17, 18, 33, 1),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Text(
+                                            "Choose a Customer",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    Expanded(
+                                      child: Container(
+                                        child: getCustomerListView(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                        ),
+                          ),
+                      ),
+                    ),Expanded(
+
+                      child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          children: <Widget>[
                             Expanded(
+                              flex: 3,
                               child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    onTap: () {
-                                      print('Card tapped.');
-                                    },
-                                    child: Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
-                                        child: TextField(
-                                          decoration: new InputDecoration(
-                                              prefixIcon: Icon(Icons.calendar_today),
-                                              labelText: "Trip Duration (Days)",
-                                              fillColor: Colors.white,
-                                              filled: true
+
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Card(
+
+                                    child: InkWell(
+                                      splashColor: Colors.blue.withAlpha(30),
+                                      onTap: () {
+                                        print('Card tapped.');
+                                      },
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            width: MediaQuery.of(context).size.width,
+                                            height: 60,
+                                            child: Card(
+                                              margin: EdgeInsets.zero,
+                                              clipBehavior: Clip.antiAlias,
+                                              color: Color.fromRGBO(17, 18, 33, 1),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Text(
+                                                  "Choose a Destination",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                          //controller: controller,
-                                        ),
+                                          Expanded(
+                                            child: Container(
+                                              child: getTripListView(),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -193,7 +175,6 @@ class _NewBookingState extends State<NewBooking> {
                               ),
                             ),
                             Expanded(
-                              flex: 2,
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 child: Card(
@@ -233,6 +214,90 @@ class _NewBookingState extends State<NewBooking> {
                           ],
                         ),
                       ),
+                    ),Expanded(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                          children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20.0, bottom: 0.0, left: 10.0, right: 10.0),
+                                  child: TextField(
+                                    //controller: key.currentState.textEditingControllers[controllerValue],
+                                    style: new TextStyle(
+                                        fontSize: MediaQuery.of(context).size.height * 0.05,
+                                        color: Colors.black
+                                    ),
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(Icons.supervised_user_circle),
+                                        labelText: "Passengers",
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(5.0)
+                                        )
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                            Expanded(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 20.0, bottom: 0.0, left: 10.0, right: 10.0),
+                                  child: TextField(
+
+                                    maxLines: 99,
+                                    //controller: key.currentState.textEditingControllers[controllerValue],
+                                    style: new TextStyle(
+                                        fontSize: MediaQuery.of(context).size.height * 0.05,
+                                        color: Colors.black
+                                    ),
+                                    decoration: InputDecoration(
+                                        hintText: "Special Requests",
+                                        border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(5.0)
+                                        )
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Card(
+                                  child: InkWell(
+                                    splashColor: Colors.amber.withAlpha(30),
+                                    onTap: (){
+                                      print("Create new Trip");
+                                    },
+                                    child: Container(
+                                      child: FlatButton(
+                                          color: Colors.red,
+                                          textColor: Colors.white,
+                                          disabledColor: Colors.grey,
+                                          disabledTextColor: Colors.black,
+                                          padding: EdgeInsets.all(8.0),
+                                          splashColor: Colors.blueAccent,
+
+                                          onPressed: () {
+                                            print("Woop");
+                                           // _save();
+
+                                          },
+                                          child: Text(
+                                            'Create Booking',
+                                            style: TextStyle(color: Colors.white, fontSize: 30),
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -250,16 +315,23 @@ class _NewBookingState extends State<NewBooking> {
     return ListView.builder(
       itemCount: customerCount,
       itemBuilder: (BuildContext context, int position) {
+
+        var selectedColor = const Color.fromRGBO(255, 255, 255, 1);
+
+        if(currentCustomer == position){
+          selectedColor = Colors.amber;
+        }
+
         return Card(
-          color: Colors.white,
+          color: selectedColor,
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.amber,
-              child: Text(this.customerList[position].firstName,
+              child: Text(this.customerList[position].customerID.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            title: Text(this.customerList[position].lastName,
+            title: Text(this.customerList[position].firstName + " " + this.customerList[position].lastName,
                 style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -273,7 +345,9 @@ class _NewBookingState extends State<NewBooking> {
               ],
             ),
             onTap: () {
-              debugPrint("ListTile Tapped");
+              setState(() {
+                currentCustomer = position;
+              });
             },
           ),
         );
@@ -285,17 +359,24 @@ class _NewBookingState extends State<NewBooking> {
     return ListView.builder(
       itemCount: tripCount,
       itemBuilder: (BuildContext context, int position) {
-        return Card(
 
-          color: Colors.white,
+
+        var selectedColor = const Color.fromRGBO(255, 255, 255, 1);
+
+        if(currentTrip == position){
+          selectedColor = Colors.amber;
+        }
+
+        return Card(
+          color: selectedColor,
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.amber,
-              child: Text(this.tripList[position].destinationID.toString(),
+              child: Text((position + 1).toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            title: Text(this.tripList[position].coachID.toString(),
+            title: Text(this.tripList[position].destinationID.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -312,6 +393,9 @@ class _NewBookingState extends State<NewBooking> {
               ],
             ),
             onTap: () {
+              setState(() {
+                currentTrip = position;
+              });
               debugPrint("ListTile Tapped");
             },
           ),
@@ -340,7 +424,7 @@ class _NewBookingState extends State<NewBooking> {
   void updateTripList(){
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Trips>> tripListFuture = databaseHelper.getTripList();
+      Future<List<TripLookup>> tripListFuture = databaseHelper.getTripLookup();
       tripListFuture.then((tripList) {
         setState(() {
 

@@ -162,17 +162,20 @@ class _NewTripState extends State<NewTrip> {
                                     },
                                     child: Container(
                                           child: Padding(
-                                            padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                                            padding: EdgeInsets.only(top: 20.0, bottom: 0.0, left: 10.0, right: 10.0),
                                             child: TextField(
                                               controller: totalCostController,
-
-                                              decoration: new InputDecoration(
-                                                  prefixIcon: Icon(Icons.credit_card),
-                                                  labelText: "Total Cost",
-                                                  fillColor: Colors.white,
-                                                  filled: true
+                                              style: new TextStyle(
+                                                  fontSize: MediaQuery.of(context).size.height * 0.05,
+                                                  color: Colors.black
                                               ),
-                                              //controller: controller,
+                                              decoration: InputDecoration(
+                                                  prefixIcon: Icon(Icons.add_circle),
+                                                  labelText: "Total Cost",
+                                                  border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(5.0)
+                                                  )
+                                              ),
                                             ),
                                           ),
 
@@ -352,6 +355,7 @@ class _NewTripState extends State<NewTrip> {
         }
 
         return Card(
+
           color: selectedColor,
           elevation: 2.0,
           child: ListTile(
