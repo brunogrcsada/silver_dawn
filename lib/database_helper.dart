@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:silver_dawn/bookings.dart';
+import 'package:silver_dawn/cities.dart';
 import 'package:silver_dawn/coaches.dart';
+import 'package:silver_dawn/cutomer_lookup.dart';
 import 'package:silver_dawn/drivers.dart';
 import 'package:silver_dawn/destinations.dart';
 import 'trips.dart';
@@ -11,6 +13,7 @@ import 'dart:io';
 import 'package:silver_dawn/customers.dart';
 import 'dart:typed_data';
 import 'package:path/path.dart';
+import 'booking_lookup.dart';
 
 class DatabaseHelper {
 
@@ -24,6 +27,8 @@ class DatabaseHelper {
   String destinationTable = 'destination';
   String coachTable = 'coach';
   String driverTable = 'driver';
+  String bookingTable = 'booking';
+  String cityTable = 'city';
 
   String customerID = 'customer_id';
   String firstName = 'first_name';
@@ -52,6 +57,16 @@ class DatabaseHelper {
   String coachID = 'coach_id';
   String registration = 'registration';
   String seats = 'seats';
+
+  String bookingID = 'booking_id';
+  String bookingCustomerID = 'customer_id';
+  String bookingTripID = 'booking_id';
+  String passengerNumber = 'passenger_number';
+  String bookingDate = 'date';
+  String bookingRequests = 'requests';
+
+  String cityID = 'city_id';
+  String cityName = 'name';
 
   DatabaseHelper._createInstance();
 
@@ -133,13 +148,36 @@ class DatabaseHelper {
     return result;
   }
 
+  //---------------------------Booking Queries----------------------------//
+
+  Future<List<Map<String, dynamic>>> getBookMapList() async {
+    Database db = await this.database;
+
+    var result = await db.rawQuery('SELECT booking.booking_id, booking.trip_id, customer.first_name,'
+        ' customer.last_name, booking.passenger_number '
+        ' FROM booking JOIN customer ON booking.customer_id = customer.customer_id;');
+
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getCustomerQueryMapList() async {
+    Database db = await this.database;
+
+    var result = await db.rawQuery('SELECT customer.customer_id, customer.first_name,'
+        ' customer.last_name, customer.address_1, customer.address_2, city.name,'
+        ' customer.post_code, customer.email, customer.phone_number, customer.requirements'
+        ' FROM customer JOIN city ON customer.city = city.city_id;');
+
+    return result;
+  }
+
   //-----------------------------Trip Queries-----------------------------//
 
   Future<List<Map<String, dynamic>>> getTripMapList() async {
     Database db = await this.database;
 
     var result = await db.rawQuery('SELECT trip.trip_id, destination.name,'
-        ' driver.driver_id, coach.coach_id, trip.date, trip.duration, trip.cost'
+        ' driver.first_name, driver.last_name, coach.registration, trip.date, trip.duration, trip.cost'
         ' FROM trip JOIN destination ON trip.destination_id = destination.destination_id'
         ' JOIN driver ON trip.driver_id = driver.driver_id JOIN coach'
         ' ON trip.coach_id = coach.coach_id;');
@@ -174,9 +212,44 @@ class DatabaseHelper {
     return result;
   }
 
-  //--------------------------------------//
+  //--------------------------------------------------------------------------//
 
-  //-----------------------------Destination Queries-----------------------------//
+  //-------------------------------City Queries-------------------------------//
+
+  Future<List<Map<String, dynamic>>> getCityMapList() async {
+    Database db = await this.database;
+    var result = await db.query(cityTable);
+    return result;
+  }
+
+  Future<int> insertCity(Cities city) async {
+    Database db = await this.database;
+    var result = await db.insert(cityTable, city.toMap());
+
+    return result;
+  }
+
+  Future<int> updateCity(Cities city) async {
+    var db = await this.database;
+    var result = await db.update(cityTable, city.toMap(),
+        where: '$cityID = ?', whereArgs: [city.cityID]);
+    return result;
+  }
+
+  Future<int> deleteCity(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM $cityTable WHERE $cityID = $id');
+    return result;
+  }
+
+  Future<int> getCityCount() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $cityID');
+    int result = Sqflite.firstIntValue(x);
+    return result;
+  }
+
+  //-----------------------------Destination Queries--------------------------//
 
   Future<List<Map<String, dynamic>>> getDestinationMapList() async {
     Database db = await this.database;
@@ -211,9 +284,9 @@ class DatabaseHelper {
     return result;
   }
 
-  //--------------------------------------//
+  //--------------------------------------------------------------------------//
 
-  //-----------------------------Coach Queries-----------------------------//
+  //-----------------------------Coach Queries--------------------------------//
 
   Future<List<Map<String, dynamic>>> getCoachMapList() async {
     Database db = await this.database;
@@ -287,6 +360,43 @@ class DatabaseHelper {
 
   //--------------------------------------//
 
+  //-----------------------------Booking Queries-----------------------------//
+
+  Future<List<Map<String, dynamic>>> getBookingMapList() async {
+    Database db = await this.database;
+    var result = await db.query(bookingTable, orderBy: '$bookingDate ASC');
+    return result;
+  }
+
+  Future<int> insertBooking(Bookings booking) async {
+    Database db = await this.database;
+    var result = await db.insert(bookingTable, booking.toMap());
+
+    return result;
+  }
+
+  Future<int> updateBooking(Bookings booking) async {
+    var db = await this.database;
+    var result = await db.update(bookingTable, booking.toMap(),
+        where: '$bookingID = ?', whereArgs: [booking.bookingID]);
+    return result;
+  }
+
+  Future<int> deleteBooking(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM $bookingTable WHERE $bookingID = $id');
+    return result;
+  }
+
+  Future<int> getBookingCount() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> x = await db.rawQuery('SELECT COUNT (*) from $bookingID');
+    int result = Sqflite.firstIntValue(x);
+    return result;
+  }
+
+  //--------------------------------------//
+
   Future <List<Drivers>> getDriverList() async{
     var driverMapList = await getDriverMapList();
     int count = driverMapList.length;
@@ -299,6 +409,18 @@ class DatabaseHelper {
     return driverList;
   }
 
+  Future <List<Bookings>> getBookingList() async{
+    var bookingMapList = await getBookingMapList();
+    int count = bookingMapList.length;
+
+    List<Bookings> bookingList = List<Bookings>();
+    for (int i = 0; i < count; i++){
+      bookingList.add(Bookings.fromMapObject(bookingMapList[i]));
+    }
+
+    return bookingList;
+  }
+
   Future <List<TripLookup>> getTripLookup() async{
     var tripLookupMapList = await getTripMapList();
     int count = tripLookupMapList.length;
@@ -309,6 +431,42 @@ class DatabaseHelper {
     }
 
     return lookupList;
+  }
+
+  Future <List<Cities>> getCity() async{
+    var cityMapList = await getCityMapList();
+    int count = cityMapList.length;
+
+    List<Cities> cityList = List<Cities>();
+    for (int i = 0; i < count; i++){
+      cityList.add(Cities.fromMapObject(cityMapList[i]));
+    }
+
+    return cityList;
+  }
+
+  Future <List<BookingLookup>> getFilteredBooking() async{
+    var bookingLookupMapList = await getBookMapList();
+    int count = bookingLookupMapList.length;
+
+    List<BookingLookup> bookingList = List<BookingLookup>();
+    for (int i = 0; i < count; i++){
+      bookingList.add(BookingLookup.fromMapObject(bookingLookupMapList[i]));
+    }
+
+    return bookingList;
+  }
+
+  Future <List<CustomerLookup>> getFilteredCustomers() async{
+    var customerLookupMapList = await getCustomerQueryMapList();
+    int count = customerLookupMapList.length;
+
+    List<CustomerLookup> customerList = List<CustomerLookup>();
+    for (int i = 0; i < count; i++){
+      customerList.add(CustomerLookup.fromMapObject(customerLookupMapList[i]));
+    }
+
+    return customerList;
   }
 
   Future<List<Coaches>> getCoachList() async{

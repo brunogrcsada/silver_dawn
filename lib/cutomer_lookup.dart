@@ -1,24 +1,24 @@
-class Customers {
+class CustomerLookup {
   int _customerID;
   String _firstName;
   String _lastName;
   String _address;
   String _address2;
-  int _town;
+  String _town;
   String _postCode;
   String _email;
   String _phoneNumber;
   String _requirements;
 
-  Customers(this._firstName, this._lastName, this._address, this._address2, this._town, this._postCode, this._email, this._phoneNumber, [this._requirements] );
-  Customers.withId(this._customerID, this._firstName, this._lastName, this._address, this._address2, this._town, this._postCode, this._email, this._phoneNumber, [this._requirements]);
+  CustomerLookup(this._firstName, this._lastName, this._address, this._address2, this._town, this._postCode, this._email, this._phoneNumber, [this._requirements] );
+  CustomerLookup.withId(this._customerID, this._firstName, this._lastName, this._address, this._address2, this._town, this._postCode, this._email, this._phoneNumber, [this._requirements]);
 
   int get customerID => _customerID;
   String get firstName => _firstName;
   String get lastName => _lastName;
   String get address => _address;
   String get address2 => _address2;
-  int get town => _town;
+  String get town => _town;
   String get postCode => _postCode;
   String get email => _email;
   String get phoneNumber => _phoneNumber;
@@ -50,8 +50,8 @@ class Customers {
     }
   }
 
-  set town(int customerTown) {
-      this._town = customerTown;
+  set town(String customerTown) {
+    this._town = customerTown;
   }
 
   set postCode(String customerPostCode) {
@@ -73,7 +73,9 @@ class Customers {
   }
 
   set requirements(String customerRequirements) {
+    if (customerRequirements.length <= 255) {
       this._requirements = customerRequirements;
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -95,7 +97,7 @@ class Customers {
     return map;
   }
 
-  Customers.fromMapObject(Map<String, dynamic> map) {
+  CustomerLookup.fromMapObject(Map<String, dynamic> map) {
     this._customerID = map['customer_id'];
     this._firstName = map['first_name'];
     this._lastName = map['last_name'];

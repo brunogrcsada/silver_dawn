@@ -1,34 +1,40 @@
 class TripLookup{
   int _tripID;
-  String _destinationID;
-  int _driverID;
-  int _coachID;
+  String _destinationName;
+  String _driverFirstName;
+  String _driverLastName;
+  String _coachRegistration;
   String _date;
   double _duration;
   double _cost;
 
-  TripLookup(this._destinationID, this._driverID, this._coachID, this._date, this._duration, this._cost);
-  TripLookup.withId(this._tripID, this._destinationID, this._driverID, this._coachID, this._date, this._duration, this._cost);
+  TripLookup(this._destinationName, this._driverFirstName, this._driverLastName, this._coachRegistration, this._date, this._duration, this._cost);
+  TripLookup.withId(this._tripID, this._destinationName, this._driverFirstName, this._driverLastName, this._coachRegistration, this._date, this._duration, this._cost);
 
   int get tripID => _tripID;
-  String get destinationID => _destinationID;
-  int get driverID => _driverID;
-  int get coachID => _coachID;
-  String get date => _date; //TODO: Convert to date object.
+  String get destinationName => _destinationName;
+  String get driverFirstName => _driverFirstName;
+  String get driverLastName => _driverLastName;
+  String get coachRegistration => _coachRegistration;
+  String get date => _date;
   double get duration => _duration;
   double get cost => _cost;
   List get variableList => ["","","","","",""];
 
-  set destinationID(String destinationIdentification){
-    this._destinationID = destinationIdentification;
+  set destinationName(String destinationIdentification){
+    this._destinationName = destinationIdentification;
   }
 
-  set driverID(int driverIdentification){
-    this._driverID = driverIdentification;
+  set driverFirstName(String driverNameFirst){
+    this._driverFirstName = driverNameFirst;
   }
 
-  set coachID(int coachIdentification){
-    this._coachID = coachIdentification;
+  set driverLastName(String driverNameLast){
+    this._driverLastName = driverNameLast;
+  }
+
+  set coachRegistration(String coachIdentification){
+    this._coachRegistration = coachIdentification;
   }
 
   set date(String tripDate){
@@ -49,21 +55,23 @@ class TripLookup{
     if (tripID != null) {
       map['trip_id'] = _tripID;
     }
-    map['name'] = _destinationID;
-    map['driver_id'] = _driverID;
-    map['coach_id'] = _coachID;
+    map['name'] = _destinationName;
+    map['first_name'] = _driverFirstName;
+    map['last_name'] = _driverLastName;
+    map['registration'] = _coachRegistration;
     map['date'] = _date;
     map['duration'] = _duration;
-    map['cost'] = _coachID;
+    map['cost'] = _cost;
 
     return map;
   }
 
   TripLookup.fromMapObject(Map<String, dynamic> map) {
     this._tripID = map['trip_id'];
-    this._destinationID = map['name'];
-    this._driverID = map['driver_id'];
-    this._coachID = map['coach_id'];
+    this._destinationName = map['name'];
+    this._driverFirstName = map['first_name'];
+    this._driverLastName = map['last_name'];
+    this._coachRegistration = map['registration'];
     this._date = map['date'];
     this._duration = map['duration'];
     this._cost = map['cost'];

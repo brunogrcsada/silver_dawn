@@ -7,8 +7,8 @@ class Trips{
   double _duration;
   double _cost;
 
-  Trips(this._destinationID, this._driverID, this._coachID, this._date, this._duration, this._cost);
-  Trips.withId(this._tripID, this._destinationID, this._driverID, this._coachID, this._date, this._duration, this._cost);
+  Trips(this._destinationID, this._driverID, this._coachID, this._date, this._duration, [this._cost]);
+  Trips.withId(this._tripID, this._destinationID, this._driverID, this._coachID, this._date, this._duration, [this._cost]);
 
   int get tripID => _tripID;
   int get destinationID => _destinationID;
@@ -54,7 +54,7 @@ class Trips{
     map['coach_id'] = _coachID;
     map['date'] = _date;
     map['duration'] = _duration;
-    map['cost'] = _coachID;
+    map['cost'] = _cost;
 
     return map;
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:silver_dawn/cutomer_lookup.dart';
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'customers.dart';
@@ -13,32 +14,59 @@ class CustomerViewer extends StatefulWidget {
 
 class CustomerViewerState extends State<CustomerViewer> {
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Customers> customerList;
-  List<Customers> filteredList = [];
-  List<Customers> filteredLastName = [];
+  List<CustomerLookup> customerList;
+  List<CustomerLookup> filteredList = [];
+  List<CustomerLookup> filteredLastName = [];
   int count = 0;
 
   TextEditingController controller = new TextEditingController();
   TextEditingController postCodeController = new TextEditingController();
+  TextEditingController lastNameController = new TextEditingController();
 
   String filter;
   String postCodeFilter;
+  String lastNameFilter;
 
   @override
   initState() {
-    controller.addListener(() {
+    postCodeController.addListener((){
       setState(() {
-        filter = controller.text;
+        lastNameFilter = lastNameController.text;
         postCodeFilter = postCodeController.text;
+        filter = controller.text;
 
-        if(filter != null && filter != ""){
-          concurrentList(filter);
+        if(postCodeFilter != null && postCodeFilter != ""){
+          listFiltering("", postCodeFilter);
         } else{
           resetList();
         }
 
-        if(postCodeFilter != null && postCodeFilter != ""){
-          concurrentList(postCodeFilter);
+      });
+    });
+
+    lastNameController.addListener((){
+      setState(() {
+        lastNameFilter = lastNameController.text;
+        postCodeFilter = postCodeController.text;
+        filter = controller.text;
+
+        if(lastNameFilter != null && lastNameFilter != ""){
+          listFiltering("", postCodeFilter);
+        } else{
+          resetList();
+        }
+
+      });
+    });
+
+    controller.addListener(() {
+      setState(() {
+        lastNameFilter = lastNameController.text;
+        postCodeFilter = postCodeController.text;
+        filter = controller.text;
+
+        if(filter != null && filter != ""){
+          listFiltering(filter, "");
         } else{
           resetList();
         }
@@ -56,7 +84,7 @@ class CustomerViewerState extends State<CustomerViewer> {
     final double itemWidth = size.width / 2;
 
     if (customerList == null) {
-      customerList = List<Customers>();
+      customerList = List<CustomerLookup>();
       updateListView();
     }
 
@@ -71,10 +99,10 @@ class CustomerViewerState extends State<CustomerViewer> {
             children: <Widget>[
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 10.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.verified_user),
+                        prefixIcon: Icon(Icons.person_pin),
                         labelText: "First Name",
                         fillColor: Colors.white,
                         filled: true
@@ -84,28 +112,28 @@ class CustomerViewerState extends State<CustomerViewer> {
                 ),
               ),Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.verified_user),
+                        prefixIcon: Icon(Icons.account_box),
                         labelText: "Last Name",
                         fillColor: Colors.white,
                         filled: true
                     ),
-                    controller: controller,
+                    controller: lastNameController,
                   ),
                 ),
               ),Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                  padding: const EdgeInsets.only(top: 30.0, left: 10.0, right: 30.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.verified_user),
+                        prefixIcon: Icon(Icons.location_on),
                         labelText: "Post Code",
                         fillColor: Colors.white,
                         filled: true
                     ),
-                    controller: controller,
+                    controller: postCodeController,
                   ),
                 ),
               ),
@@ -114,7 +142,7 @@ class CustomerViewerState extends State<CustomerViewer> {
 
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(top: 30.0),
+              padding: const EdgeInsets.only(top: 10.0),
               child: GridView.count(
                 crossAxisCount: 2,
                 padding: const EdgeInsets.only(bottom: 90.0, left: 10.0, right: 10.0),
@@ -272,9 +300,11 @@ class CustomerViewerState extends State<CustomerViewer> {
     }
   }
 
-  void concurrentList(filter){
-    print(filter);
-    filteredList = customerList.where((i) => i.firstName.contains(filter)).toList();
+  void listFiltering(firstNameFilter, postFilter){
+
+      filteredList = customerList.where((i) => i.firstName.toLowerCase().contains(filter.toLowerCase()))
+          .where((i) => i.postCode.toLowerCase().contains(postCodeFilter.toLowerCase())).toList()
+          .where((i) => i.lastName.toLowerCase().contains(lastNameFilter.toLowerCase())).toList();
 
   }
 
@@ -285,7 +315,7 @@ class CustomerViewerState extends State<CustomerViewer> {
   void updateListView() {
     final Future<Database> dataInstance = databaseHelper.initializeDatabase();
     dataInstance.then((database) {
-      Future<List<Customers>> customerListFuture = databaseHelper.getCustomerList();
+      Future<List<CustomerLookup>> customerListFuture = databaseHelper.getFilteredCustomers();
       customerListFuture.then((customerList) {
         setState(() {
 

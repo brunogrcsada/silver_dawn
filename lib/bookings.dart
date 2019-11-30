@@ -2,17 +2,19 @@ class Bookings {
   int _bookingID;
   int _customerID;
   int _tripID;
+  String _date;
   int _passengerNumber;
   String _requirements;
 
-  Bookings(this._customerID, this._tripID, this._passengerNumber, [this._requirements]);
-  Bookings.withId(this._bookingID, this._customerID, this._tripID, this._passengerNumber, [this._requirements]);
+  Bookings(this._customerID, this._tripID, this._date, this._passengerNumber, [this._requirements]);
+  Bookings.withId(this._bookingID, this._customerID, this._tripID, this._date, this._passengerNumber, [this._requirements]);
 
   int get bookingID => _bookingID;
   int get customerID => _customerID;
   int get tripID => _tripID;
+  String get date => _date;
   int get passengerNumber => _passengerNumber;
-  List get variableList => ["", "", ""];
+  List get variableList => ["", "", "", ""];
 
 
   set customerID(int customerIdentification) {
@@ -21,6 +23,10 @@ class Bookings {
 
   set tripID(int tripIdentification) {
       this._tripID = tripIdentification;
+  }
+
+  set date(String currentDate){
+      this._date = currentDate;
   }
 
   set passengerNumber(int bookingNumber) {
@@ -42,8 +48,9 @@ class Bookings {
     }
     map['customer_id'] = _customerID;
     map['trip_id'] = _tripID;
+    map['date'] = _date;
     map["passenger_number"] = _passengerNumber;
-    map['requirements'] = _requirements;
+    map['requests'] = _requirements;
 
     return map;
   }
@@ -52,8 +59,9 @@ class Bookings {
     this._bookingID = map['booking_id'];
     this._customerID = map['customer_id'];
     this._tripID = map['trip_id'];
+    this._date = map['date'];
     this._passengerNumber = map['passenger_number'];
-    this._requirements = map['requirements'];
+    this._requirements = map['requests'];
 
   }
 

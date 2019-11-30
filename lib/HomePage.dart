@@ -173,12 +173,12 @@ class MyWidget extends StatelessWidget {
             if(widgetStructure.id == 0){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', "", "", '','', ''), 'Add Customer' )),
+                MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', 0, "", '','', ''), 'Add Customer' )),
               );
             } else if(widgetStructure.id == 1){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => NewBooking(Bookings(0,0,0,''), 'Create Booking')),
+                MaterialPageRoute(builder: (context) => NewBooking(Bookings(0,0,'',0,''), 'Create Booking')),
               );
             } else{
               Navigator.push(

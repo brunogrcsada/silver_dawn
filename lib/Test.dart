@@ -1,7 +1,14 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'customers.dart';
+import 'package:icon_shadow/icon_shadow.dart';
+import 'package:silver_dawn/trip_lookup.dart';
+import 'dart:async';
+import 'package:sqflite/sqflite.dart';
+import 'trips.dart';
+import 'package:date_format/date_format.dart';
+import 'package:silver_dawn/ViewTrip.dart';
 import 'database_helper.dart';
+import 'customers.dart';
+import 'cities.dart';
 
 class CustomField extends StatefulWidget {
   CustomField({this.fieldHint, this.controllerValue});
@@ -88,6 +95,13 @@ class CustomerDetailState extends State<CustomerDetail> {
   String appBarTitle;
   Customers customer;
 
+  List<Cities> cityList;
+  int cityCount;
+
+  int currentIndex;
+
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
   var textEditingControllers = <TextEditingController>[];
 
   CustomerDetailState(this.customer, this.appBarTitle);
@@ -99,6 +113,12 @@ class CustomerDetailState extends State<CustomerDetail> {
       var textEditingController = new TextEditingController(text: str);
       textEditingControllers.add(textEditingController);
     });
+
+    if (cityList == null) {
+      cityList = List<Cities>();
+      updateCityListView();
+    }
+
 
     return WillPopScope(
 
@@ -227,31 +247,116 @@ class CustomerDetailState extends State<CustomerDetail> {
   // Save data to database
   void _save() async {
 
-    customer.firstName = textEditingControllers[0].text;
-    customer.lastName = textEditingControllers[1].text;
-    customer.address = textEditingControllers[2].text;
-    customer.address2 = textEditingControllers[3].text;
-    customer.town = textEditingControllers[4].text;
-    customer.postCode = textEditingControllers[5].text;
-    customer.phoneNumber = textEditingControllers[6].text;
-    customer.email = textEditingControllers[7].text;
-    customer.requirements = textEditingControllers[8].text;
+    final emailCheck = RegExp(r"(^[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$)");
+    final alphaCheck = RegExp(r"^[a-zA-Z]*$");
 
-    moveToLastScreen();
+    if((textEditingControllers[0].text == "")
+        || (textEditingControllers[0].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[0].text))){
+      _showDialog("Error", "Please enter a valid first name");
+    } else if((textEditingControllers[1].text == "")
+        || (textEditingControllers[1].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[1].text))){
+      _showDialog("Error", "Please enter the customer's last name");
+    } else if((textEditingControllers[2].text == "")
+        || (textEditingControllers[2].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[2].text))){
+      _showDialog("Error", "Please enter the customer's first line address");
+    } else if((textEditingControllers[3].text == "")
+        || (textEditingControllers[3].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[3].text))){
+      _showDialog("Error", "Please enter the customer's second line address");
+    } else if((textEditingControllers[4].text == "")
+        || (textEditingControllers[4].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[4].text))){
+      _showDialog("Error", "Please enter the customer's town/city");
+    } else if((textEditingControllers[5].text == "")
+        || (textEditingControllers[5].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[5].text))){
+      _showDialog("Error", "Please enter the customer's postcode");
+    } else if((textEditingControllers[6].text == "")
+        || (textEditingControllers[6].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[6].text))){
+      _showDialog("Error", "Please enter the customer's phone number");
+    } else if((textEditingControllers[7].text == "")
+        || (textEditingControllers[7].text == null)
+        || (!alphaCheck.hasMatch(textEditingControllers[7].text))){
+      _showDialog("Error", "Please enter the customer's email");
+    } else{
 
-    int result;
-    if (customer.customerID != null) {  // Case 1: Update operation
-      result = await helper.updateCustomer(customer);
-    } else { // Case 2: Insert Operation
-      result = await helper.insertCustomer(customer);
+      if(textEditingControllers[0].text.length > 50){
+        _showDialog("Error", "Please enter a valid first name");
+      } else if(textEditingControllers[1].text.length > 50){
+        _showDialog("Error", "Please enter a valid last name");
+      } else if(textEditingControllers[2].text.length > 45){
+        _showDialog("Error", "Please enter a valid first line address");
+      } else if(textEditingControllers[3].text.length > 45){
+        _showDialog("Error", "Please enter a valid second line address");
+      } else if(textEditingControllers[4].text.length > 45){
+        _showDialog("Error", "Please enter a valid town/city");
+      } else if(textEditingControllers[5].text.length > 7){
+        _showDialog("Error", "Please enter a valid postcode");
+      } else if(textEditingControllers[6].text.length > 255){
+        _showDialog("Error", "Please enter a valid email");
+      } else if(textEditingControllers[7].text.length > 12){
+        _showDialog("Error", "Please enter a valid phone number");
+      } else if(textEditingControllers[8].text.length > 350){
+        _showDialog("Error", "Please enter valid requirements. ");
+      } else if(!emailCheck.hasMatch(textEditingControllers[6].text)){
+        _showDialog("Error", "Please enter a valid email format. ");
+      }
+      else{
+        customer.firstName = textEditingControllers[0].text;
+        customer.lastName = textEditingControllers[1].text;
+        customer.address = textEditingControllers[2].text;
+        customer.address2 = textEditingControllers[3].text;
+
+        //customer.town = textEditingControllers[4].text;
+        var cityNameList = [];
+
+        for(var i = 0; i < cityList.length; i++){
+          cityNameList.add(cityList[i].name.toLowerCase());
+        }
+
+        print(cityNameList);
+
+        if(cityNameList.contains(textEditingControllers[4].text.toLowerCase())){
+          currentIndex = cityNameList.indexOf(textEditingControllers[4].text.toLowerCase()) + 1;
+        } else{
+          currentIndex = cityNameList.length + 1;
+          helper.insertCity(Cities(textEditingControllers[4].text));
+        }
+
+        print(currentIndex);
+
+        customer.town = currentIndex;
+        customer.postCode = textEditingControllers[5].text;
+        customer.email = textEditingControllers[6].text;
+        customer.phoneNumber = textEditingControllers[7].text;
+
+        if(textEditingControllers[8].text == "" || textEditingControllers[8].text == null){
+          customer.requirements = null;
+        } else{
+          customer.requirements = textEditingControllers[8].text;
+        }
+
+        moveToLastScreen();
+
+        int result;
+        if (customer.customerID != null) {  // Case 1: Update operation
+          result = await helper.updateCustomer(customer);
+        } else { // Case 2: Insert Operation
+          result = await helper.insertCustomer(customer);
+        }
+
+        if (result != 0) {  // Success
+          _showAlertDialog('Status', 'Customer Saved Successfully');
+        } else {  // Failure
+          _showAlertDialog('Status', 'Problem Saving Customer');
+        }
+
+      }
     }
-
-    if (result != 0) {  // Success
-      _showAlertDialog('Status', 'Customer Saved Successfully');
-    } else {  // Failure
-      _showAlertDialog('Status', 'Problem Saving Customer');
-    }
-
   }
 
 
@@ -270,6 +375,45 @@ class CustomerDetailState extends State<CustomerDetail> {
     } else {
       _showAlertDialog('Status', 'Error Occured while Deleting Customer');
     }
+  }
+
+
+  void _showDialog(String title, String message) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void updateCityListView(){
+    final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+    dbFuture.then((database) {
+      Future<List<Cities>> cityListFuture = databaseHelper.getCity();
+      cityListFuture.then((cityList) {
+        setState(() {
+
+          this.cityList = cityList;
+          this.cityCount = cityList.length;
+
+        });
+      });
+    });
   }
 
   void _showAlertDialog(String title, String message) {

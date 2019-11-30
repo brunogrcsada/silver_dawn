@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:silver_dawn/bookings.dart';
+import 'package:silver_dawn/cutomer_lookup.dart';
 import 'package:silver_dawn/trip_lookup.dart';
-import 'trips.dart';
+import 'package:intl/intl.dart';
 import 'customers.dart';
 import 'database_helper.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -24,32 +25,35 @@ class _NewBookingState extends State<NewBooking> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
 
-  List<Customers> customerList;
+  List<CustomerLookup> customerList;
   List<TripLookup> tripList;
+
+  var passengerNumber = new TextEditingController();
+  var specialRequirements = new TextEditingController();
+
+  DateTime selectedDate = DateTime.now();
 
   int customerCount = 0;
   int tripCount = 0;
 
   int currentTrip;
+  int currentTripID;
+
   int currentCustomer;
+  int currentCustomerID;
 
   String appBarTitle;
-  Bookings customer;
+  Bookings bookings;
 
   var textEditingControllers = <TextEditingController>[];
 
-  _NewBookingState(this.appBarTitle, this.customer);
+  _NewBookingState(this.appBarTitle, this.bookings);
 
   @override
   Widget build(BuildContext context) {
 
-    customer.variableList.forEach((str) {
-      var textEditingController = new TextEditingController(text: str);
-      textEditingControllers.add(textEditingController);
-    });
-
     if (customerList == null) {
-      customerList = List<Customers>();
+      customerList = List<CustomerLookup>();
       updateCustomerList();
     }
 
@@ -135,7 +139,7 @@ class _NewBookingState extends State<NewBooking> {
                               child: Container(
 
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.only(top:8.0, bottom: 8.0),
                                   child: Card(
 
                                     child: InkWell(
@@ -155,7 +159,7 @@ class _NewBookingState extends State<NewBooking> {
                                               child: Padding(
                                                 padding: const EdgeInsets.all(16.0),
                                                 child: Text(
-                                                  "Choose a Destination",
+                                                  "Choose a Trip",
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
                                                 ),
@@ -163,6 +167,7 @@ class _NewBookingState extends State<NewBooking> {
                                             ),
                                           ),
                                           Expanded(
+                                            flex: 2,
                                             child: Container(
                                               child: getTripListView(),
                                             ),
@@ -173,44 +178,7 @@ class _NewBookingState extends State<NewBooking> {
                                   ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.blue.withAlpha(30),
-                                    onTap: () {
-                                      print('Card tapped.');
-                                    },
-                                    child: Container(
-                                      child: FlatButton(
-                                          color: Colors.blue,
-                                          textColor: Colors.white,
-                                          disabledColor: Colors.grey,
-                                          disabledTextColor: Colors.black,
-                                          padding: EdgeInsets.all(8.0),
-                                          splashColor: Colors.blueAccent,
-
-                                          onPressed: () {
-                                            DatePicker.showDatePicker(context,
-                                                showTitleActions: true,
-                                                minTime: DateTime.now(),
-                                                onChanged: (date) {
-                                                  print('change $date');
-                                                }, onConfirm: (date) {
-                                                  print('confirm $date');
-                                                }, currentTime: DateTime.now(), locale: LocaleType.en);
-                                          },
-                                          child: Text(
-                                            'Select Date',
-                                            style: TextStyle(color: Colors.white, fontSize: 30),
-                                          )),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -224,16 +192,25 @@ class _NewBookingState extends State<NewBooking> {
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 20.0, bottom: 0.0, left: 10.0, right: 10.0),
                                   child: TextField(
+                                    controller: passengerNumber,
                                     //controller: key.currentState.textEditingControllers[controllerValue],
                                     style: new TextStyle(
                                         fontSize: MediaQuery.of(context).size.height * 0.05,
-                                        color: Colors.black
+                                        color: Colors.white
                                     ),
                                     decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.supervised_user_circle),
+
+                                        labelStyle: new TextStyle(color: Colors.white),
+                                        prefixIcon: Icon(Icons.supervised_user_circle, color: Colors.white,),
                                         labelText: "Passengers",
+                                        enabledBorder: new OutlineInputBorder(
+                                            borderSide: new BorderSide(color: Colors.white)),
                                         border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5.0)
+                                            borderRadius: BorderRadius.circular(5.0),
+                                          borderSide: new BorderSide(
+                                            color: Colors.white
+                                          )
+
                                         )
                                     ),
                                   ),
@@ -241,55 +218,65 @@ class _NewBookingState extends State<NewBooking> {
                               ),
 
                             Expanded(
+                              flex: 2,
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 child: Padding(
-                                  padding: EdgeInsets.only(top: 20.0, bottom: 0.0, left: 10.0, right: 10.0),
+                                  padding: EdgeInsets.only(top: 20.0, bottom: 10.0, left: 10.0, right: 10.0),
                                   child: TextField(
-
+                                    controller: specialRequirements,
                                     maxLines: 99,
                                     //controller: key.currentState.textEditingControllers[controllerValue],
                                     style: new TextStyle(
                                         fontSize: MediaQuery.of(context).size.height * 0.05,
-                                        color: Colors.black
+                                        color: Colors.white
                                     ),
                                     decoration: InputDecoration(
+                                        hintStyle: new TextStyle(color: Colors.white),
+                                        labelStyle: new TextStyle(color: Colors.white),
                                         hintText: "Special Requests",
+                                        enabledBorder: new OutlineInputBorder(
+                                          borderSide: new BorderSide(color: Colors.white)
+                                        ),
                                         border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(5.0)
+                                            borderRadius: BorderRadius.circular(5.0),
+                                          borderSide: new BorderSide(
+                                            color: Colors.white
+                                          )
                                         )
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                  child: InkWell(
-                                    splashColor: Colors.amber.withAlpha(30),
-                                    onTap: (){
-                                      print("Create new Trip");
-                                    },
-                                    child: Container(
-                                      child: FlatButton(
-                                          color: Colors.red,
-                                          textColor: Colors.white,
-                                          disabledColor: Colors.grey,
-                                          disabledTextColor: Colors.black,
-                                          padding: EdgeInsets.all(8.0),
-                                          splashColor: Colors.blueAccent,
+                            Container(
+                              height: 100,
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom:8.0, left:8.0, right:8.0),
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Card(
+                                    child: InkWell(
+                                      splashColor: Colors.amber.withAlpha(30),
+                                      child: Container(
+                                        child: FlatButton(
+                                            color: Colors.red,
+                                            textColor: Colors.white,
+                                            disabledColor: Colors.grey,
+                                            disabledTextColor: Colors.black,
+                                            padding: EdgeInsets.all(8.0),
+                                            splashColor: Colors.blueAccent,
 
-                                          onPressed: () {
-                                            print("Woop");
-                                           // _save();
+                                            onPressed: () {
+                                              _save();
+                                             // _save();
 
-                                          },
-                                          child: Text(
-                                            'Create Booking',
-                                            style: TextStyle(color: Colors.white, fontSize: 30),
-                                          )),
+                                            },
+                                            child: Text(
+                                              'Create Booking',
+                                              style: TextStyle(color: Colors.white, fontSize: 30),
+                                            )),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -347,6 +334,7 @@ class _NewBookingState extends State<NewBooking> {
             onTap: () {
               setState(() {
                 currentCustomer = position;
+                currentCustomerID = this.customerList[position].customerID;
               });
             },
           ),
@@ -359,7 +347,6 @@ class _NewBookingState extends State<NewBooking> {
     return ListView.builder(
       itemCount: tripCount,
       itemBuilder: (BuildContext context, int position) {
-
 
         var selectedColor = const Color.fromRGBO(255, 255, 255, 1);
 
@@ -376,7 +363,7 @@ class _NewBookingState extends State<NewBooking> {
               child: Text((position + 1).toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
-            title: Text(this.tripList[position].destinationID.toString(),
+            title: Text(this.tripList[position].destinationName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -395,6 +382,7 @@ class _NewBookingState extends State<NewBooking> {
             onTap: () {
               setState(() {
                 currentTrip = position;
+                currentTripID = this.tripList[position].tripID;
               });
               debugPrint("ListTile Tapped");
             },
@@ -408,10 +396,46 @@ class _NewBookingState extends State<NewBooking> {
     Navigator.pop(context, true);
   }
 
+  void _save() async {
+
+    if(currentCustomerID == null){
+      _showDialog('Error', 'Please select a customer.');
+    } else if(currentTripID == null){
+      _showDialog('Error', 'Please select a trip.');
+    } else if(passengerNumber.text == ""){
+      _showDialog('Error', 'Please enter a passenger number.');
+    } else{
+
+      bookings.customerID = currentCustomerID;
+      bookings.tripID = currentTripID;
+      bookings.date = DateFormat('dd/MM/yyyy').format(DateTime.now());
+      bookings.passengerNumber = int.parse(passengerNumber.text);
+      bookings.requirements = specialRequirements.text;
+
+      moveToLastScreen();
+
+      int result;
+      if (bookings.bookingID != null) {  // Case 1: Update operation
+        result = await databaseHelper.updateBooking(bookings);
+      } else { // Case 2: Insert Operation
+        result = await databaseHelper.insertBooking(bookings);
+      }
+
+      if (result != 0) {  // Success
+        _showDialog('Status', 'Booking Saved Successfully');
+      } else {  // Failure
+        _showDialog('Status', 'Problem Saving Booking');
+      }
+    }
+
+  }
+
+
+
   void updateCustomerList() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Customers>> customerListFuture = databaseHelper.getCustomerList();
+      Future<List<CustomerLookup>> customerListFuture = databaseHelper.getFilteredCustomers();
       customerListFuture.then((customerList) {
         setState(() {
           this.customerList = customerList;
@@ -436,15 +460,26 @@ class _NewBookingState extends State<NewBooking> {
     });
   }
 
-  void _showAlertDialog(String title, String message) {
-
-    AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-    );
+  void _showDialog(String title, String message) {
+    // flutter defined function
     showDialog(
-        context: context,
-        builder: (_) => alertDialog
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
