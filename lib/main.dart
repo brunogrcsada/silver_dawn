@@ -5,26 +5,6 @@ import 'TripPage.dart';
 import 'HomePage.dart';
 import 'database_helper.dart';
 
-
-void main() async {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  static const String _title = 'Silver Dawn Coaches';
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: MyStatefulWidget(),
-    );
-  }
-
-}
-
 class MyStatefulWidget extends StatefulWidget {
   MyStatefulWidget({Key key}) : super(key: key);
 

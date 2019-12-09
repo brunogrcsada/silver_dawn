@@ -138,7 +138,7 @@ class TripPageState extends State<TripPage> {
                   return new GridTile(
                     child: GestureDetector(
                       onTap: (){
-                        openTrip(this.tripList[index], 'Edit Todo');
+                        openTrip(this.filteredList[index], 'Edit Trip');
                         },
                       child: new Card(
                         elevation: 4,

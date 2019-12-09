@@ -248,7 +248,9 @@ class CustomerDetailState extends State<CustomerDetail> {
   void _save() async {
 
     final emailCheck = RegExp(r"(^[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$)");
-    final alphaCheck = RegExp(r"^[a-zA-Z]*$");
+    final alphaCheck = RegExp(r"^[a-zA-Z0-9][a-z A-Z0-9]+$");
+
+    //TODO: change the maximum field length for addresses to 255
 
     if((textEditingControllers[0].text == "")
         || (textEditingControllers[0].text == null)
@@ -275,8 +277,7 @@ class CustomerDetailState extends State<CustomerDetail> {
         || (!alphaCheck.hasMatch(textEditingControllers[5].text))){
       _showDialog("Error", "Please enter the customer's postcode");
     } else if((textEditingControllers[6].text == "")
-        || (textEditingControllers[6].text == null)
-        || (!alphaCheck.hasMatch(textEditingControllers[6].text))){
+        || (textEditingControllers[6].text == null)){
       _showDialog("Error", "Please enter the customer's phone number");
     } else if((textEditingControllers[7].text == "")
         || (textEditingControllers[7].text == null)

@@ -310,7 +310,7 @@ class _ViewTripState extends State<ViewTrip>{
                                                                       ), Padding(
                                                                         padding: const EdgeInsets.all(20.0),
                                                                         child: Text(
-                                                                          this.trip.cost.toString() + "0",
+                                                                          "£" + this.trip.cost.toString() + "0",
                                                                           style: new TextStyle(
                                                                             fontSize: 30,
                                                                           ),
@@ -489,7 +489,36 @@ class _ViewTripState extends State<ViewTrip>{
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Card(
+                      color: Color.fromRGBO(17, 18, 33, 1),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left:8.0),
+                              child: Icon(
+                                Icons.supervised_user_circle,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left:8.0, right: 10.0),
+                              child: Text(
+                                this.filteredList[position].passengers.toString(),
+                                style: new TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white
+                                )
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   onTap: () {
                     //_delete(context, customerList[position]);
                   },

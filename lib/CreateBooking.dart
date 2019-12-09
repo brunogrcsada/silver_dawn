@@ -314,23 +314,13 @@ class _NewBookingState extends State<NewBooking> {
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.amber,
+              backgroundColor: Colors.red,
               child: Text(this.customerList[position].customerID.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             title: Text(this.customerList[position].firstName + " " + this.customerList[position].lastName,
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,),
-                  onTap: () {
-                    //_delete(context, customerList[position]);
-                  },
-                ),
-              ],
-            ),
+
             onTap: () {
               setState(() {
                 currentCustomer = position;
@@ -359,26 +349,13 @@ class _NewBookingState extends State<NewBooking> {
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.amber,
+              backgroundColor: Colors.red,
               child: Text((position + 1).toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             title: Text(this.tripList[position].destinationName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,),
-                  onTap: () {
-                    setState(() {
 
-                    });
-                    //_delete(context, customerList[position]);
-                  },
-                ),
-              ],
-            ),
             onTap: () {
               setState(() {
                 currentTrip = position;
