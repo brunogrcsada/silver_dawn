@@ -27,6 +27,7 @@ class _NewBookingState extends State<NewBooking> {
 
   List<CustomerLookup> customerList;
   List<TripLookup> tripList;
+  List<TripLookup> filteredList = [];
 
   var passengerNumber = new TextEditingController();
   var specialRequirements = new TextEditingController();
@@ -356,6 +357,34 @@ class _NewBookingState extends State<NewBooking> {
             title: Text(this.tripList[position].destinationName.toString(),
                 style: TextStyle(fontWeight: FontWeight.bold)),
 
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                      child: Container(
+                        width: 101,
+                        height: MediaQuery.of(context).size.height,
+                        child: Card(
+                          color: Color.fromRGBO(20, 25, 40, 1),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0, left: 9.0, bottom: 8.0),
+                            child: Text(
+                              this.tripList[position].date.toString(),
+                              style: new TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                ),
+              ],
+            ),
+
             onTap: () {
               setState(() {
                 currentTrip = position;
@@ -429,7 +458,22 @@ class _NewBookingState extends State<NewBooking> {
       tripListFuture.then((tripList) {
         setState(() {
 
+          DateFormat format = new DateFormat("dd/MM/yyyy");
+
           this.tripList = tripList;
+          this.filteredList = tripList.where(
+                  (i) => !format.parse(i.date.substring(0, i.date.length -2 )
+                  + "20" + i.date.substring(i.date.length - 2))
+                  .difference(DateTime.now()).isNegative).toList();
+
+          this.filteredList.sort((a, b) => format.parse(a.date.substring(0, a.date.length -2 )
+              + "20" + a.date.substring(a.date.length - 2))
+              .difference(DateTime.now()).compareTo(format.parse(b.date.substring(0, b.date.length -2 )
+              + "20" + b.date.substring(b.date.length - 2))
+              .difference(DateTime.now())));
+
+          this.tripList = filteredList;
+
           this.tripCount = tripList.length;
 
         });

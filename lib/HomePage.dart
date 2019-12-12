@@ -128,9 +128,10 @@ class _InnerSwiperState extends State<InnerSwiper> {
           children: <Widget>[
             new SizedBox(
               child: new Swiper(
+                physics: BouncingScrollPhysics(),
                 controller: controllers[index],
                 itemCount: widgetList.length,
-                viewportFraction: MediaQuery.of(context).size.width * 0.0004,
+                viewportFraction: MediaQuery.of(context).size.width * 0.00025,
                 // TODO: Dynamically modify card width based on the
                 scale: 0.9, //TODO: Change the scale (Refer to Stanley)
                 index: 1,

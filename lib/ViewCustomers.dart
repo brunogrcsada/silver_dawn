@@ -148,7 +148,7 @@ class CustomerViewerState extends State<CustomerViewer> {
                 padding: const EdgeInsets.only(bottom: 90.0, left: 10.0, right: 10.0),
                 mainAxisSpacing: 4.0,
                 crossAxisSpacing: 3.0,
-                childAspectRatio: (itemWidth / itemHeight),
+                childAspectRatio: (itemWidth / itemHeight - 0.5),
                 // Create a grid with 2 columns. If you change the scrollDirection to
                 // horizontal, this produces 2 rows.
                 // Generate 100 widgets that display their index in the List.
@@ -264,6 +264,40 @@ class CustomerViewerState extends State<CustomerViewer> {
                                 ],
                               )
 
+                          ),Padding(
+                              padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                      Icons.my_location,
+                                      color: Colors.blueAccent,
+                                      size: 40
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    child: getAddress(this.filteredList[index].address.toString(),
+                                        this.filteredList[index].address2.toString(), this.filteredList[index].town.toString())
+                                  ),
+                                ],
+                              )
+
+                          ),Padding(
+                              padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                      Icons.assignment_turned_in,
+                                      color: Colors.blueAccent,
+                                      size: 40
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    child: getSpecialRequirement(
+                                        this.filteredList[index].requirements.toString())
+                                  ),
+                                ],
+                              )
+
                           )
                         ],
                       ),
@@ -286,6 +320,44 @@ class CustomerViewerState extends State<CustomerViewer> {
         ),
       ),
     );
+
+  }
+  
+  Widget getSpecialRequirement(String specialRequirement){
+    if(specialRequirement == "null"){
+      return Text(
+          "Not Required",
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    } else{
+      return Text(
+          specialRequirement,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    }
+  }
+
+  Widget getAddress(String address1, String address2, String town){
+    if(address2 == "null"){
+      return Text(
+          address1 + ", " + town,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    } else{
+      return Text(
+          address1 + ", " + address2 + ", " + town,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    }
+
   }
 
   getFirstLetter(String title) {

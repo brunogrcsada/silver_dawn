@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:icon_shadow/icon_shadow.dart';
 import 'package:silver_dawn/booking_lookup.dart';
 import 'package:silver_dawn/bookings.dart';
@@ -479,8 +480,8 @@ class _ViewTripState extends State<ViewTrip>{
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: Text(position.toString(),
+              backgroundColor: Colors.red,
+              child: Text((position + 1).toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             title: Text(this.filteredList[position].firstName.toString() + " " + this.filteredList[position].lastName.toString(),
@@ -526,8 +527,12 @@ class _ViewTripState extends State<ViewTrip>{
               ],
             ),
             onTap: () {
-              setState(() {
-              });
+
+              _customerQuery(context, this.filteredList[position].firstName.toString(),
+                  this.filteredList[position].lastName.toString(), this.filteredList[position].phoneNumber.toString(),
+                  this.filteredList[position].email.toString(), this.filteredList[position].postCode.toString(),
+                  this.filteredList[position].address.toString(), this.filteredList[position].address2.toString(),
+                  this.filteredList[position].town.toString(), this.filteredList[position].requirements.toString());
             },
           ),
         );
@@ -547,12 +552,243 @@ class _ViewTripState extends State<ViewTrip>{
           this.bookingCount = filteredList.length;
 
           for(var i = 0; i < bookingCount; i++){
-            totalCustomers += bookingList[i].passengers;
+            totalCustomers += filteredList[i].passengers;
           }
 
         });
       });
     });
+  }
+
+  Future<String> _customerQuery(BuildContext context, String firstName,
+      String lastName, String phoneNumber, String email, String postCode,
+      String address1, String address2, String city, String requirements) async {
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: true, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return Container(
+          width: MediaQuery.of(context).size.width * 1,
+          child: AlertDialog(
+            backgroundColor: Color.fromRGBO(255, 255, 255, 0),
+
+            content:  Padding(
+              padding: const EdgeInsets.only(bottom: 60.0 ),
+              child: new Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.0),
+                ),
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0, left:20.0, right: 20.0),
+                  child: Column(
+                    children: <Widget>[
+                      Card(
+                        elevation: 4,
+                        clipBehavior: Clip.antiAlias,
+                        color: Color.fromRGBO(255, 0, 0, 0.6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        child: Padding(
+                            padding: EdgeInsets.only(top: 10.0, left: 20.0, bottom: 10.0),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                    Icons.person_pin,
+                                    color: Colors.white,
+                                    size: 70
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                      firstName + " " + lastName,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 30, color: Color.fromRGBO(255, 255, 255, 1))
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
+                      ),
+
+                      Padding(
+                          padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                  Icons.phone_in_talk,
+                                  color: Colors.blueAccent,
+                                  size: 40
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                    phoneNumber, //TODO: Should be phone number, not email.
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 23)
+                                ),
+                              ),
+                            ],
+                          )
+
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                  Icons.email,
+                                  color: Colors.blueAccent,
+                                  size: 40
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 10.0, left: 10.0),
+                                    child: Text(
+                                        email, //TODO: Should be phone number, not email.
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(fontSize: 23)
+                                    ),
+
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                  Icons.location_on,
+                                  color: Colors.blueAccent,
+                                  size: 40
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Text(
+                                    postCode, //TODO: Should be phone number, not email.
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 23)
+                                ),
+                              ),
+                            ],
+                          )
+
+                      ),Padding(
+                          padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                  Icons.my_location,
+                                  color: Colors.blueAccent,
+                                  size: 40
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                  child: getAddress(address1, address2, city)
+                              ),
+                            ],
+                          )
+
+                      ),Padding(
+                          padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                  Icons.assignment_turned_in,
+                                  color: Colors.blueAccent,
+                                  size: 40
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                 child: getSpecialRequirement(
+                                        requirements)
+                               ),
+
+                            ],
+                          )
+
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 18.0),
+                            child: FlatButton(
+                              child: Text('Close'),
+                              color: Colors.blue,
+                              textColor: Colors.white,
+                              disabledColor: Colors.grey,
+                              disabledTextColor: Colors.black,
+                              padding: EdgeInsets.all(8.0),
+                              splashColor: Colors.blueAccent,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+
+                  ),
+                ),
+              ),
+            ),
+
+          ),
+        );
+      },
+    );
+  }
+
+  Widget getSpecialRequirement(String specialRequirement){
+    if(specialRequirement == "null"){
+      return Text(
+          "Not Required",
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    } else{
+      return Text(
+          specialRequirement,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    }
+  }
+
+  Widget getAddress(String address1, String address2, String town){
+    if(address2 == "null"){
+      return Text(
+          address1 + ", " + town,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    } else{
+      return Text(
+          address1 + ", " + address2 + ", " + town,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 23)
+      );
+    }
+
   }
 
   void moveToLastScreen() {

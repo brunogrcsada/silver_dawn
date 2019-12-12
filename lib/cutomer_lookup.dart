@@ -88,7 +88,7 @@ class CustomerLookup {
     map['last_name'] = _lastName;
     map['address_1'] = _address;
     map['address_2'] = _address2;
-    map['city'] = _town;
+    map['name'] = _town;
     map['post_code'] = _postCode;
     map['email'] = _email;
     map['phone_number'] = _phoneNumber;
@@ -103,7 +103,7 @@ class CustomerLookup {
     this._lastName = map['last_name'];
     this._address = map['address_1'];
     this._address2 = map['address_2'];
-    this._town = map['city'];
+    this._town = map['name'];
     this._postCode = map['post_code'];
     this._email = map['email'];
     this._phoneNumber = map['phone_number'];

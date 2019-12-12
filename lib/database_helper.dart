@@ -154,8 +154,9 @@ class DatabaseHelper {
     Database db = await this.database;
 
     var result = await db.rawQuery('SELECT booking.booking_id, booking.trip_id, customer.first_name,'
-        ' customer.last_name, booking.passenger_number '
-        ' FROM booking JOIN customer ON booking.customer_id = customer.customer_id;');
+        ' customer.last_name, customer.address_1, customer.address_2, city.name, customer.post_code, '
+        ' customer.email, customer.phone_number, customer.requirements, booking.passenger_number '
+        ' FROM booking JOIN customer ON booking.customer_id = customer.customer_id JOIN city ON customer.city = city.city_id;');
 
     return result;
   }
