@@ -430,21 +430,13 @@ class _NewTripState extends State<NewTrip> {
             elevation: 2.0,
             child: ListTile(
               leading: CircleAvatar(
-                backgroundColor: Colors.amber,
+                backgroundColor: Colors.red,
                 child: Text((position + 1).toString(),
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               title: Text(this.destinationList[position].name,
                   style: TextStyle(fontWeight: FontWeight.bold)),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  GestureDetector(
-                    child: Icon(Icons.delete,color: Colors.red,),
 
-                  ),
-                ],
-              ),
               onTap: () {
                 setState(() {
                   currentDestination = position;
@@ -475,7 +467,7 @@ class _NewTripState extends State<NewTrip> {
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.amber,
+              backgroundColor: Colors.red,
               child: Text(this.coachList[position].coachID.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
@@ -536,21 +528,14 @@ class _NewTripState extends State<NewTrip> {
           elevation: 2.0,
           child: ListTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.amber,
+              backgroundColor: Colors.red,
               child: Text(this.driverList[position].driverID.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             title: Text(this.driverList[position].firstName + " " +
                 this.driverList[position].lastName,
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: Icon(Icons.delete,color: Colors.red,)
-                ),
-              ],
-            ),
+
             onTap: () {
               setState(() {
                 currentDriver = position;
@@ -571,9 +556,9 @@ class _NewTripState extends State<NewTrip> {
   void _save() async {
 
       if(currentDestination == null){
-        _showDialog('Error', 'Please select a customer.');
+        _showDialog('Error', 'Please select a destination.');
       } else if(currentCoach == null){
-        _showDialog('Error', 'Please select a trip.');
+        _showDialog('Error', 'Please select a coach.');
       } else if(currentDriver == null) {
         _showDialog('Error', 'Please select a driver.');
       } else if(totalCostController.text == null){
@@ -581,33 +566,55 @@ class _NewTripState extends State<NewTrip> {
       } else if(tripDurationController.text == null){
         _showDialog('Error', 'Please enter the duration of the trip');
       } else{
-          trip.destinationID = currentDestinationID;
-          trip.coachID = currentCoachID;
-          trip.driverID = currentDriverID;
 
-          trip.cost = double.parse(totalCostController.text); // TODO: Fix pricing difference
-          trip.duration = double.parse(tripDurationController.text);  // TODO: Ensure that user enters a valid duration
+          if (!isNumeric(totalCostController.text.toString())){
+            _showDialog('Error', 'Please enter a valid number for the trip cost.');
+          } else if (double.parse(totalCostController.text.toString()) < 1){
+            _showDialog('Error', 'Please enter a valid cost for the trip.');
+          } else if (double.parse(totalCostController.text.toString()) > 1000){
+            _showDialog('Error', 'Please enter a trip cost lower than £1000.');
+          } else if(!isNumeric(tripDurationController.text.toString())){
+            _showDialog('Error', 'Please enter a valid number for the trip duration.');
+          } else if (int.parse(tripDurationController.text.toString()) < 1){
+            _showDialog('Error', 'Please enter a positive value for the trip duration.');
+          } else {
+
+            trip.destinationID = currentDestinationID;
+            trip.coachID = currentCoachID;
+            trip.driverID = currentDriverID;
+
+            trip.cost = double.parse(totalCostController.text); // TODO: Fix pricing difference
+            trip.duration = int.parse(tripDurationController.text.toString());  // TODO: Ensure that user enters a valid duration
 
 
-          trip.date = currentDate.substring(0, currentDate.length -4 )
-              + currentDate.substring(currentDate.length - 2);
+            trip.date = currentDate.substring(0, currentDate.length -4 )
+                + currentDate.substring(currentDate.length - 2);
 
-          moveToLastScreen();
+            moveToLastScreen();
 
-          int result;
-          if (trip.tripID != null) {  // Case 1: Update operation
-            result = await databaseHelper.updateTrip(trip);
-          } else { // Case 2: Insert Operation
-            result = await databaseHelper.insertTrip(trip);
+            int result;
+            if (trip.tripID != null) {
+              result = await databaseHelper.updateTrip(trip);
+            } else {
+              result = await databaseHelper.insertTrip(trip);
+            }
+
+            if (result != 0) { // Success
+              _showAlertDialog('Status', 'Trip Saved Successfully');
+            } else { // Failure
+              _showAlertDialog('Status', 'Problem Saving Trip');
+            }
           }
 
-          if (result != 0) {  // Success
-            _showAlertDialog('Status', 'Trip Saved Successfully');
-          } else {  // Failure
-            _showAlertDialog('Status', 'Problem Saving Trip');
-          }
       }
 
+  }
+
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
   }
 
   Future<String> _inputQuery(BuildContext context) async {
@@ -615,7 +622,7 @@ class _NewTripState extends State<NewTrip> {
     String destinationHotel = '';
     return showDialog<String>(
       context: context,
-      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      barrierDismissible: true, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Enter Destination Details'),
@@ -631,13 +638,16 @@ class _NewTripState extends State<NewTrip> {
                     },
                   )),
               new Expanded(
-                  child: new TextField(
-                    autofocus: true,
-                    decoration: new InputDecoration(
-                        labelText: 'Hotel', hintText: 'eg. Grosvenor.'),
-                    onChanged: (value) {
-                      destinationHotel = value;
-                    },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left:9.0),
+                    child: new TextField(
+                      autofocus: true,
+                      decoration: new InputDecoration(
+                          labelText: 'Hotel', hintText: 'eg. Grosvenor.'),
+                      onChanged: (value) {
+                        destinationHotel = value;
+                      },
+                    ),
                   ))
             ],
           ),

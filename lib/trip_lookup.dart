@@ -5,7 +5,7 @@ class TripLookup{
   String _driverLastName;
   String _coachRegistration;
   String _date;
-  double _duration;
+  int _duration;
   double _cost;
 
   TripLookup(this._destinationName, this._driverFirstName, this._driverLastName, this._coachRegistration, this._date, this._duration, this._cost);
@@ -17,7 +17,7 @@ class TripLookup{
   String get driverLastName => _driverLastName;
   String get coachRegistration => _coachRegistration;
   String get date => _date;
-  double get duration => _duration;
+  int get duration => _duration;
   double get cost => _cost;
   List get variableList => ["","","","","",""];
 
@@ -41,7 +41,7 @@ class TripLookup{
     this._date = tripDate;
   }
 
-  set duration(double tripDuration){
+  set duration(int tripDuration){
     this._duration = tripDuration;
   }
 

@@ -180,7 +180,7 @@ class _ViewTripState extends State<ViewTrip>{
 
                                                                         ),
                                                                       ), Padding(
-                                                                        padding: const EdgeInsets.all(20.0),
+                                                                        padding: const EdgeInsets.only(top:20.0, bottom:20.0, right:20.0, left:16.0),
                                                                         child: Text(
                                                                           this.trip.coachRegistration.toString(),
                                                                           style: new TextStyle(
@@ -311,7 +311,7 @@ class _ViewTripState extends State<ViewTrip>{
                                                                       ), Padding(
                                                                         padding: const EdgeInsets.all(20.0),
                                                                         child: Text(
-                                                                          "£" + this.trip.cost.toString() + "0",
+                                                                          "£" + format(double.parse(this.trip.cost.toString())),
                                                                           style: new TextStyle(
                                                                             fontSize: 30,
                                                                           ),
@@ -384,7 +384,7 @@ class _ViewTripState extends State<ViewTrip>{
                                                                     Padding(
                                                                       padding: const EdgeInsets.all(12.0),
                                                                       child: Text(
-                                                                          "£" + (this.trip.cost * totalCustomers).toString() + "0",
+                                                                          "£" + format(this.trip.cost * totalCustomers),
                                                                         style: new TextStyle(
                                                                           color: Colors.white,
                                                                           fontSize: 40
@@ -757,7 +757,7 @@ class _ViewTripState extends State<ViewTrip>{
   Widget getSpecialRequirement(String specialRequirement){
     if(specialRequirement == "null"){
       return Text(
-          "Not Required",
+          "No Requirements",
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 23)
@@ -770,6 +770,10 @@ class _ViewTripState extends State<ViewTrip>{
           style: TextStyle(fontSize: 23)
       );
     }
+  }
+
+  String format(double n) {
+    return n.toStringAsFixed(double.parse(n.toInt().toString() + "0").truncateToDouble() == n ? 0 : 2);
   }
 
   Widget getAddress(String address1, String address2, String town){

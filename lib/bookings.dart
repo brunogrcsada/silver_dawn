@@ -34,9 +34,9 @@ class Bookings {
   }
 
   set requirements(String customerRequirements) {
-    if (customerRequirements.length <= 255) {
+
       this._requirements = customerRequirements;
-    }
+
   }
 
 

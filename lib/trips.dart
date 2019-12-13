@@ -4,7 +4,7 @@ class Trips{
   int _driverID;
   int _coachID;
   String _date;
-  double _duration;
+  int _duration;
   double _cost;
 
   Trips(this._destinationID, this._driverID, this._coachID, this._date, this._duration, [this._cost]);
@@ -15,7 +15,7 @@ class Trips{
   int get driverID => _driverID;
   int get coachID => _coachID;
   String get date => _date; //TODO: Convert to date object.
-  double get duration => _duration;
+  int get duration => _duration;
   double get cost => _cost;
   List get variableList => ["","","","","",""];
 
@@ -35,7 +35,7 @@ class Trips{
     this._date = tripDate;
   }
 
-  set duration(double tripDuration){
+  set duration(int tripDuration){
     this._duration = tripDuration;
   }
 

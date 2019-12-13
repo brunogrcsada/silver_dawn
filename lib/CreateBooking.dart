@@ -412,31 +412,85 @@ class _NewBookingState extends State<NewBooking> {
       _showDialog('Error', 'Please enter a passenger number.');
     } else{
 
-      bookings.customerID = currentCustomerID;
-      bookings.tripID = currentTripID;
-      bookings.date = DateFormat('dd/MM/yyyy').format(DateTime.now());
-      bookings.passengerNumber = int.parse(passengerNumber.text);
-      bookings.requirements = specialRequirements.text;
+      if(!isNumeric(passengerNumber.text.toString())){
+        _showDialog('Error', 'Please enter a number as the passenger amount!');
+      } else if(int.parse(passengerNumber.text) < 1){
+        _showDialog('Error', 'Please enter a positive number of passengers!');
+      } else{
 
-      moveToLastScreen();
+        if(specialRequirements.text == ""){
+          bookings.requirements = null;
+          bookings.customerID = currentCustomerID;
+          bookings.tripID = currentTripID;
 
-      int result;
-      if (bookings.bookingID != null) {  // Case 1: Update operation
-        result = await databaseHelper.updateBooking(bookings);
-      } else { // Case 2: Insert Operation
-        result = await databaseHelper.insertBooking(bookings);
+          String currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
+          bookings.date = currentDate.substring(0, currentDate.length -4 )
+              + currentDate.substring(currentDate.length - 2);
+          bookings.passengerNumber = int.parse(passengerNumber.text);
+
+          moveToLastScreen();
+
+          int result;
+          if (bookings.bookingID != null) {  // Case 1: Update operation
+            result = await databaseHelper.updateBooking(bookings);
+          } else { // Case 2: Insert Operation
+            result = await databaseHelper.insertBooking(bookings);
+          }
+
+          if (result != 0) {  // Success
+            _showDialog('Status', 'Booking Saved Successfully');
+          } else {  // Failure
+            _showDialog('Status', 'Problem Saving Booking');
+          }
+        } else{
+          if(specialRequirements.text.length > 255){
+            _showDialog('Error', 'Please enter a shorter note for special requirements!');
+          } else{
+            bookings.requirements = specialRequirements.text;
+
+            bookings.customerID = currentCustomerID;
+            bookings.tripID = currentTripID;
+
+            String currentDate = DateFormat('dd/MM/yyyy').format(DateTime.now());
+
+            bookings.date = currentDate.substring(0, currentDate.length -4 )
+                + currentDate.substring(currentDate.length - 2);
+
+            bookings.passengerNumber = int.parse(passengerNumber.text);
+
+            moveToLastScreen();
+
+            int result;
+            if (bookings.bookingID != null) {  // Case 1: Update operation
+              result = await databaseHelper.updateBooking(bookings);
+            } else { // Case 2: Insert Operation
+              result = await databaseHelper.insertBooking(bookings);
+            }
+
+            if (result != 0) {  // Success
+              _showDialog('Status', 'Booking Saved Successfully');
+            } else {  // Failure
+              _showDialog('Status', 'Problem Saving Booking');
+            }
+          }
+
+        }
+
+
       }
 
-      if (result != 0) {  // Success
-        _showDialog('Status', 'Booking Saved Successfully');
-      } else {  // Failure
-        _showDialog('Status', 'Problem Saving Booking');
-      }
+
     }
 
   }
 
-
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
 
   void updateCustomerList() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();

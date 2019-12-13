@@ -19,6 +19,7 @@ environment:
 dependencies:
   flutter_swiper: ^1.1.6
   path_provider: any
+  money: ^0.2.1
   date_format: ^1.0.8
   intl: ^0.16.0
   animator: ^1.0.0+1

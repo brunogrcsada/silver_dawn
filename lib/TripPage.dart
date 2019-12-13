@@ -7,7 +7,9 @@ import 'trips.dart';
 import 'package:intl/intl.dart';
 import 'package:date_format/date_format.dart';
 import 'package:silver_dawn/ViewTrip.dart';
+import 'package:money/money.dart';
 import 'database_helper.dart';
+import 'package:silver_dawn/CreateTrip.dart';
 
 class TripPage extends StatefulWidget {
   @override
@@ -40,7 +42,7 @@ class TripPageState extends State<TripPage> {
         print(costFilter);
 
         if(costFilter == null || costFilter == ""){
-          costFilter = "0";
+          costFilter = "";
         }
 
         if(costFilter != null && costFilter != ""){
@@ -58,7 +60,7 @@ class TripPageState extends State<TripPage> {
         filter = destinationController.text;
 
         if(costFilter == null || costFilter == ""){
-          costFilter = "0";
+          costFilter = "";
         }
 
         if(filter != null && filter != ""){
@@ -112,8 +114,8 @@ class TripPageState extends State<TripPage> {
                   padding: const EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
                   child: TextField(
                     decoration: new InputDecoration(
-                        prefixIcon: Icon(Icons.card_membership),
-                        labelText: "Minimum Cost",
+                        prefixIcon: Icon(Icons.directions_bus),
+                        labelText: "Coach Registration",
                         fillColor: Colors.white,
                         filled: true
                     ),
@@ -128,11 +130,11 @@ class TripPageState extends State<TripPage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: GridView.count(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 padding: const EdgeInsets.only(bottom: 90.0, left: 10.0, right: 10.0),
                 mainAxisSpacing: 4.0,
                 crossAxisSpacing: 3.0,
-                childAspectRatio: (itemWidth / itemHeight),
+                childAspectRatio: (itemWidth / itemHeight - 0.65),
                 scrollDirection: Axis.vertical,
                 children: List.generate(filteredList.length, (index) {
                   return new GridTile(
@@ -171,7 +173,7 @@ class TripPageState extends State<TripPage> {
                                             this.filteredList[index].destinationName.toString(),
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(fontSize: 30, color: Color.fromRGBO(255, 255, 255, 1))
+                                            style: TextStyle(fontSize: 25, color: Color.fromRGBO(255, 255, 255, 1))
                                         ),
                                       ),
                                     ],
@@ -183,45 +185,49 @@ class TripPageState extends State<TripPage> {
                                 padding: EdgeInsets.only(top: 20.0, left: 20.0),
                                 child: Row(
                                   children: <Widget>[
-                                    Icon(
-                                        Icons.date_range,
-                                        color: Colors.blueAccent,
-                                        size: 40
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 10.0),
-                                      child: Text(
-                                          this.filteredList[index].date.toString(), //TODO: Should be phone number, not email.
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 23)
+                                    Card(
+                                      color: Color.fromRGBO(255, 70, 76, 1),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top:2.0, left: 2.0, right: 2.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom:2.0),
+                                              child: Icon(
+                                                  Icons.date_range,
+                                                  color: Colors.white,
+                                                  size: 40
+                                              ),
+                                            ), Padding(
+                                              padding: const EdgeInsets.only(left: 8.0, right:8.0, bottom: 8.0, top: 4.0),
+                                              child: Text(
+                                                "Trip Date: ",
+                                                style: new TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ],
-                                )
+                                    Container(
+                                      height: 52,
+                                      child: Card(
+                                        color: Color.fromRGBO(55, 57, 96, 1),
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right: 10.0, left: 10.0),
+                                            child: Text(
+                                                this.filteredList[index].date.toString(),
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 23,color: Colors.white)
+                                            ),
 
-                            ),
-                            Padding(
-                                padding: EdgeInsets.only(top: 20.0, left: 20.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                        Icons.credit_card,
-                                        color: Colors.blueAccent,
-                                        size: 40
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(right: 10.0, left: 10.0),
-                                          child: Text(
-                                              "£" + this.filteredList[index].cost.toString() + "0",
-                                              textAlign: TextAlign.center,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(fontSize: 23)
                                           ),
-
                                         ),
                                       ),
                                     ),
@@ -230,26 +236,102 @@ class TripPageState extends State<TripPage> {
 
                             ),
                             Padding(
-                                padding: EdgeInsets.only(top: 20.0, left: 20.0),
+                                padding: EdgeInsets.only(top: 3.0, left: 20.0),
                                 child: Row(
                                   children: <Widget>[
-                                    Icon(
-                                        Icons.access_time,
-                                        color: Colors.blueAccent,
-                                        size: 40
+                                    Card(
+                                      color: Color.fromRGBO(255, 70, 76, 1),
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 2.0, right: 2.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Icon(
+                                                Icons.credit_card,
+                                                color: Colors.white,
+                                                size: 40
+                                            ), Padding(
+                                              padding: const EdgeInsets.only(left: 8.0, right:8.0, bottom: 2.0),
+                                              child: Text(
+                                                "Ticket Cost: ",
+                                                style: new TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                    Padding(
-                                      padding: EdgeInsets.only(left: 10.0),
-                                      child: Text(
-                                          this.filteredList[index].duration.toInt().toString() + " Days", //TODO: Should be phone number, not email.
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: 23)
+                                    Container(
+                                      height: 52,
+                                      child: Card(
+                                        color: Color.fromRGBO(55, 57, 96, 1),
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right: 10.0, left: 10.0),
+                                            child: Text(
+                                                "£" + format(double.parse(this.filteredList[index].cost.toString())),
+
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 23,color: Colors.white)
+                                            ),
+
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
                                 )
 
+                            ),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Padding(
+                                  padding: EdgeInsets.only(top: 20.0, left: 24.0),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Icon(
+                                            Icons.access_time,
+                                            color: Colors.blueAccent,
+                                            size: 40
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 10.0),
+                                          child: tripDays(this.filteredList[index].duration),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left:30.0),
+                                          child: Card(
+                                            elevation: 0,
+                                            child: Row(
+                                              children: <Widget>[
+                                                Icon(
+                                                    Icons.directions_bus,
+                                                    color: Colors.blueAccent,
+                                                    size: 40
+                                                ), Padding(
+                                                  padding: const EdgeInsets.only(left:8.0, right:8.0),
+                                                  child: Text(
+                                                    this.filteredList[index].coachRegistration.toString(),
+                                                    style: new TextStyle(
+                                                      fontSize: 20
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+
+                              ),
                             )
                           ],
                         ),
@@ -266,13 +348,40 @@ class TripPageState extends State<TripPage> {
         padding: const EdgeInsets.only(bottom: 60.0),
         child: FloatingActionButton(
           onPressed: () {
-            debugPrint('FAB clicked');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NewTrip(Trips(0, 0, 0, '', 0, 0), 'Add Trip' )),
+            );
           },
           tooltip: 'Add Customer',
           child: Icon(Icons.add),
         ),
       ),
     );
+  }
+
+  String format(double n) {
+    return n.toStringAsFixed(double.parse(n.toInt().toString() + "0").truncateToDouble() == n ? 0 : 2);
+  }
+
+  Widget tripDays(int dayAmount){
+    if (dayAmount == 1){
+      return Text(
+          dayAmount.toInt().toString() + " Day",
+        style: new TextStyle(
+          color: Colors.black,
+          fontSize: 20
+        ),
+      );
+    } else if(dayAmount > 1){
+      return Text(
+          dayAmount.toInt().toString() + " Days",
+        style: new TextStyle(
+            color: Colors.black,
+            fontSize: 20
+        ),
+      );
+    }
   }
 
   getFirstLetter(String title) {
@@ -293,8 +402,8 @@ class TripPageState extends State<TripPage> {
     print(costFilter);
 
     this.filteredList = filteredList.where((i) => i.destinationName.toLowerCase()
-        .contains(filter.toLowerCase())).where((i) => i.cost >
-        int.parse(costFilter.toString())).toList();
+        .contains(filter.toLowerCase())).where((i) => i.coachRegistration.contains(
+        costFilter.toString())).toList();
 
     this.filteredList.sort((a, b) => format.parse(a.date.substring(0, a.date.length -2 )
         + "20" + a.date.substring(a.date.length - 2))

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 import 'customers.dart';
 import 'database_helper.dart';
+import 'package:silver_dawn/Test.dart';
 
 class CustomerViewer extends StatefulWidget {
   @override
@@ -313,7 +314,10 @@ class CustomerViewerState extends State<CustomerViewer> {
         padding: const EdgeInsets.only(bottom: 60.0),
         child: FloatingActionButton(
           onPressed: () {
-            debugPrint('FAB clicked');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => globalSetup(Customers('', '', '', '', 0, "", '','', ''), 'Add Customer' )),
+            );
           },
           tooltip: 'Add Customer',
           child: Icon(Icons.add),
@@ -326,7 +330,7 @@ class CustomerViewerState extends State<CustomerViewer> {
   Widget getSpecialRequirement(String specialRequirement){
     if(specialRequirement == "null"){
       return Text(
-          "Not Required",
+          "No Requirements",
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 23)
