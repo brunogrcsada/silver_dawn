@@ -33,6 +33,10 @@ class MainLogin extends StatefulWidget {
 
 class _MainLoginState extends State<MainLogin> {
 
+
+  var emailController = new TextEditingController();
+  var passwordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +92,7 @@ class _MainLoginState extends State<MainLogin> {
                           child: Padding(
                             padding: const EdgeInsets.only(right:8.0, top:8.0, bottom:8.0),
                             child: TextField(
+                              controller: emailController,
                               style: new TextStyle(
                                 color: Colors.black,
                                 fontSize: 20
@@ -124,6 +129,7 @@ class _MainLoginState extends State<MainLogin> {
                           child: Padding(
                             padding: const EdgeInsets.only(right:8.0, top:8.0, bottom:8.0),
                             child: TextField(
+                              controller: passwordController,
                               obscureText: true,
                               style: new TextStyle(
                                   color: Colors.black,
@@ -151,10 +157,7 @@ class _MainLoginState extends State<MainLogin> {
                     padding: EdgeInsets.only(top:15.0, bottom: 15.0, left: 162.0, right: 162.0),
                     splashColor: Colors.blueAccent,
                     onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyStatefulWidget()),
-                      );
+                      loginProcess(emailController.text, passwordController.text);
                     }, child: Text(
                     "Login",
                     style: TextStyle(fontSize: 20.0),
@@ -167,6 +170,44 @@ class _MainLoginState extends State<MainLogin> {
        ),
      ),
 
+    );
+  }
+
+  void loginProcess(String email, String password){
+    if(email == "silverdawncoaches@outlook.com"){
+       if(password == "@@silverDawn2019"){
+         Navigator.push(
+           context,
+           MaterialPageRoute(builder: (context) => MyStatefulWidget()),
+         );
+       } else{
+         _showDialog("Error", "The details your entered are incorrect!");
+       }
+    } else{
+      _showDialog("Error", "The details your entered are incorrect!");
+    }
+  }
+
+  void _showDialog(String title, String message) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(message),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

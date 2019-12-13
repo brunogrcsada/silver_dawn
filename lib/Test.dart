@@ -248,6 +248,7 @@ class CustomerDetailState extends State<CustomerDetail> {
   void _save() async {
 
     final emailCheck = RegExp(r"(^[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$)");
+
     final alphaCheck = RegExp(r"^[a-zA-Z0-9][a-z A-Z0-9]+$");
 
     //TODO: change the maximum field length for addresses to 255
@@ -264,10 +265,6 @@ class CustomerDetailState extends State<CustomerDetail> {
         || (textEditingControllers[2].text == null)
         || (!alphaCheck.hasMatch(textEditingControllers[2].text))){
       _showDialog("Error", "Please enter the customer's first line address");
-    } else if((textEditingControllers[3].text == "")
-        || (textEditingControllers[3].text == null)
-        || (!alphaCheck.hasMatch(textEditingControllers[3].text))){
-      _showDialog("Error", "Please enter the customer's second line address");
     } else if((textEditingControllers[4].text == "")
         || (textEditingControllers[4].text == null)
         || (!alphaCheck.hasMatch(textEditingControllers[4].text))){
@@ -301,8 +298,8 @@ class CustomerDetailState extends State<CustomerDetail> {
         _showDialog("Error", "Please enter a valid email");
       } else if(textEditingControllers[7].text.length > 12){
         _showDialog("Error", "Please enter a valid phone number");
-      } else if(textEditingControllers[8].text.length > 350){
-        _showDialog("Error", "Please enter valid requirements. ");
+      } else if(textEditingControllers[8].text.length > 255){
+        _showDialog("Error", "Please enter a valid requirements length. ");
       } else if(!emailCheck.hasMatch(textEditingControllers[6].text)){
         _showDialog("Error", "Please enter a valid email format. ");
       }
@@ -310,8 +307,12 @@ class CustomerDetailState extends State<CustomerDetail> {
         customer.firstName = textEditingControllers[0].text;
         customer.lastName = textEditingControllers[1].text;
         customer.address = textEditingControllers[2].text;
-        customer.address2 = textEditingControllers[3].text;
 
+        if(textEditingControllers[3].text == "" || textEditingControllers[3].text == null){
+          customer.address2 = null;
+        } else{
+          customer.address2 = textEditingControllers[3].text;
+        }
         //customer.town = textEditingControllers[4].text;
         var cityNameList = [];
 

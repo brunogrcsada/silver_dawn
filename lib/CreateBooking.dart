@@ -415,7 +415,7 @@ class _NewBookingState extends State<NewBooking> {
       if(!isNumeric(passengerNumber.text.toString())){
         _showDialog('Error', 'Please enter a number as the passenger amount!');
       } else if(int.parse(passengerNumber.text) < 1){
-        _showDialog('Error', 'Please enter a positive number of passengers!');
+        _showDialog('Error', 'Please enter a positive number of passengers higher than 1!');
       } else{
 
         if(specialRequirements.text == ""){

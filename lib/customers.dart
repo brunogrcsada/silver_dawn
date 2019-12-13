@@ -45,9 +45,8 @@ class Customers {
   }
 
   set address2(String customerAddress2) {
-    if (customerAddress2.length <= 255) {
       this._address2 = customerAddress2;
-    }
+
   }
 
   set town(int customerTown) {

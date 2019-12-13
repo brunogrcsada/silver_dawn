@@ -785,11 +785,14 @@ class _ViewTripState extends State<ViewTrip>{
           style: TextStyle(fontSize: 23)
       );
     } else{
-      return Text(
-          address1 + ", " + address2 + ", " + town,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 23)
+      return Container(
+        width: 300,
+        child: Text(
+            address1 + ", " + address2 + ", " + town,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 23)
+        ),
       );
     }
 

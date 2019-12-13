@@ -354,11 +354,14 @@ class CustomerViewerState extends State<CustomerViewer> {
           style: TextStyle(fontSize: 23)
       );
     } else{
-      return Text(
-          address1 + ", " + address2 + ", " + town,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 23)
+      return Container(
+        width: 500,
+        child: Text(
+            address1 + ", " + address2 + ", " + town,
+            textAlign: TextAlign.start,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 23)
+        ),
       );
     }
 
